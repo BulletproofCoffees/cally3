@@ -110,12 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 <!-- 업무내역 삭제 -->
 	<delete id="biz_del_task" parameterType="hashmap">
-		{
-			call P_BIZ_DEL_task(
-				#{pj_t_code}
-				, #{mem_num}
-			)
-		}
+		DELETE FROM BIZ_TASK WHERE PJ_T_CODE = #{pj_t_code}
 	</delete>
 	
 	
