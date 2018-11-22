@@ -73,7 +73,7 @@ function notice_detail(l){
 	$("#notice_detail #state_code").val($(l).find('#state_code').val());
 	$("#notice_detail #sender_id").val($(l).find('#sender_id').val());
 	$("#notice_detail #notice_date").text($(l).find('#notice_date').text());
-	if($(l).find('#notice_content').text() != ""){
+	if($(l).find('#notice_content').text() == ""){
 		$("#notice_detail #notice_content").val("내용이 없습니다."); 
 	}else{
 		$("#notice_detail #notice_content").val($(l).find('#notice_content').text());

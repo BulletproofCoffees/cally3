@@ -1,6 +1,9 @@
 package cally.sj.controller;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.servlet.ServletRequest;
 
@@ -31,6 +34,8 @@ public class SJ_Admin_Controller {
 	
 	@RequestMapping(value="", method=RequestMethod.POST, produces = "text/plain; charset=UTF-8")
 	public String sjMaina_opst(ServletRequest request,int f_no) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("f_no", f_no);
 		session.delete("mapper.sj.sjadminMapper.food_delete",f_no);
 		System.out.println(f_no);
 		 return "admin/sj/a_sj_main";

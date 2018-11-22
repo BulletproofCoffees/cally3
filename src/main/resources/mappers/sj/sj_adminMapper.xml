@@ -32,7 +32,7 @@ v.mem_sex = 'm'
   </select>
   
   
-  <delete id="food_delete" parameterType="int" >
+  <delete id="food_delete" >
 DELETE FROM c_sj_foods f WHERE f.f_no = #{f_no}
 </delete>
  

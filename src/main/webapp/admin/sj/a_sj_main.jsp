@@ -20,13 +20,13 @@
               <div class="panel-heading">
                 <ul class="nav nav-tabs nav-justified">
                   <li class="active">
-                    <a data-toggle="tab" href="#overview">Overview</a>
+                    <a data-toggle="tab" href="#overview">섭취량</a>
                   </li>
-                  <li>
+                 <!--  <li>
                     <a data-toggle="tab" href="#contact" class="contact-map">Contact</a>
-                  </li>
+                  </li> -->
                   <li>
-                    <a data-toggle="tab" href="#edit">Edit Profile</a>
+                    <a data-toggle="tab" href="#edit">food list</a>
                   </li>
                 </ul>
               </div>
@@ -98,7 +98,7 @@
 											<tr class="re_list">
 											<td><span class="check"><input type="checkbox" class="checked"></span></td>											
 												<td>${foodlist.F_NO}</td>
-												<td>${foodlist.DESC_KOR}</td>
+												<td><a href="${pageContext.request.contextPath}/sj/Ingredient/${foodlist.DESC_KOR}">${foodlist.DESC_KOR}</a></td>
 												<td>${foodlist.MN}</td>
 												<td>${foodlist.SERVING_WT}</td>
 												<td>${foodlist.NUTR_CONT1}</td>
