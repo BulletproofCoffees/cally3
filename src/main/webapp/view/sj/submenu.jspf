@@ -1,0 +1,84 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<style>
+.callymenu{
+	color: #666666 !important;
+}
+.c_sj{
+	color: #4ECDC4 !important;
+}
+
+</style>
+
+
+    <aside>
+      <div id="sidebar" class="nav-collapse content">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+         <li><br><h5 class="centered" style="font-size: 50px "><i class="fa fa-cutlery"></i></h5></li>
+          <li><h5 class="centered">${sessionScope.loginUser.mem_name}님</h5><br></li>
+
+
+
+			<li><c:url value="/sj" var="sjUrl"/><a href="${sjUrl}"><i class="fa fa-home"></i>홈</a></li>
+            <li><c:url value="/sj/counter" var="counter"/><a  id="today" href="${counter}"><i class="fa fa-edit"></i>칼로리작성</a></li>
+              <li><c:url value="/sj/days" var="days"/><a href="${days}"><i class="fa fa-calendar"></i>달별보기</a></li>
+            <li class="sub-menu">
+            <a href="javascript:;"><i class="fa fa-cutlery"></i><span>마이페이지</span></a>
+            <ul class="sub">           
+              <li><c:url value="/sj/analysis" var="analysis"/><a href="${analysis}"><i class=" fa fa-bar-chart-o"></i>칼로리분석</a></li>
+              <li><c:url value="/sj/changingcal" var="changingcal"/><a href="${changingcal}"><i class="fa fa-cog"></i>설정</a></li>       
+            </ul>
+          <li><br></li>
+
+
+			<!-- 검색 -->
+			<li>
+				<!-- <form id="search"> -->
+				<form action="${pageContext.request.contextPath}/sj/Ingredient" method="post">
+					<div class="input-group bootstrap-timepicker">
+						<input type="text" name="desc_kor"
+							class="form-control timepicker-default" placeholder="칼로리 검색"
+							style="background-color: #e2e2e2;"> <span
+							class="input-group-btn">
+							<button class="btn btn-theme04" 
+								style="margin-top: 0px; height: 34px; margin-bottom: 0px; background-color: #777; border-color: #777;">검색</button>
+						</span>
+					</div>
+				</form>
+			</li>
+		</ul>
+      
+      </div>
+    </aside>
+    
+    
+    
+ <!-- 날짜 스크립트 -->
+<script type="text/javascript">
+$(function() {
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; //January is 0!	
+	var yyyy = today.getFullYear();
+
+	today = yyyy+'-'+mm+'-'+dd;	
+	 $("#today").attr("href", "${counter}/="+today);	
+	 
+	
+
+	
+    }); 
+
+
+
+</script>
+
+
+<!-- 검색 -->
+<!-- <script type="text/javascript">
+	  $('#search').click(function(){
+		 
+		  location.replace('${pageContext.request.contextPath}/sj/Ingredient?food?='+$("input[name='texts']").val());
+	     });
+</script> -->

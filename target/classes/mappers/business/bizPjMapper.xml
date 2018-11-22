@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.business.BizPjMapper">
+
+<!-- 프로젝트 작성 -->
+	<insert id="p_biz_in_pj" parameterType="Biz_pj" statementType="CALLABLE">
+		{
+			call P_BIZ_IN_pj_list(
+				#{pj_important}
+				, #{pj_title}
+				, #{pj_summary}
+				, #{pj_content}
+				, #{pj_start}
+				, #{pj_end}
+				, #{pj_predict}
+				, #{pj_file}
+				, #{mem_num}
+			)
+		}
+	</insert>
+		
+<!-- 전체 프로젝트 -->	
+	<select id="biz_sel_pj_all" parameterType="int" resultType="java.util.Map">
+		SELECT PJ_CODE, AUTH_CODE, CREATOR_NAME, CREATOR_ID, PJ_IMPORTANT, SHARE_CODE, PJ_TITLE, PJ_SUMMARY
+		, TO_CHAR(PJ_START,'yyyy/mm/dd hh24:mi:ss') AS PJ_START, TO_CHAR(PJ_END,'yyyy/mm/dd hh24:mi:ss') AS PJ_END
+		, TO_CHAR(PJ_PREDICT,'yyyy/mm/dd hh24:mi:ss') AS PJ_PREDICT, TO_CHAR(PJ_COMPLETE,'yyyy/mm/dd hh24:mi:ss') AS PJ_COMPLETE 
+		FROM V_BIZ_PJ_LIST WHERE MEM_NUM = #{mem_num} ORDER BY SHARE_CODE DESC
+	</select>
+	
+<!-- 진행중인 프로젝트 -->	
+	<select id="biz_sel_pj" parameterType="int" resultType="java.util.Map">
+		SELECT PJ_CODE, AUTH_CODE, CREATOR_NAME, CREATOR_ID, PJ_IMPORTANT, SHARE_CODE, PJ_TITLE, PJ_SUMMARY
+		, TO_CHAR(PJ_START,'yyyy/mm/dd hh24:mi:ss') AS PJ_START, TO_CHAR(PJ_END,'yyyy/mm/dd hh24:mi:ss') AS PJ_END
+		, TO_CHAR(PJ_PREDICT,'yyyy/mm/dd hh24:mi:ss') AS PJ_PREDICT, TO_CHAR(PJ_COMPLETE,'yyyy/mm/dd hh24:mi:ss') AS PJ_COMPLETE 
+		FROM V_BIZ_PJ_LIST WHERE MEM_NUM = #{mem_num} AND pj_complete IS NULL ORDER BY SHARE_CODE DESC
+	</select>
+	
+<!-- 프로젝트 타이틀 리스트 (초대용)-->	
+	<select id="biz_sel_pj_title" parameterType="int" resultType="java.util.Map">
+		SELECT PJ_CODE, AUTH_CODE, SHARE_CODE, PJ_TITLE FROM V_BIZ_PJ_LIST WHERE MEM_NUM = #{mem_num} ORDER BY PJ_CODE DESC
+	</select>
+	
+<!-- 프로젝트 상세 -->	
+	<select id="biz_sel_pj_detail" parameterType="hashmap" resultType="Biz_pj">
+		SELECT MEM_ID, MEM_NUM, PJ_CODE, AUTH_CODE, CREATOR_NAME, CREATOR_ID, PJ_IMPORTANT, SHARE_CODE, PJ_TITLE, PJ_SUMMARY
+			, PJ_CONTENT, TO_CHAR(PJ_START, 'yyyy/MM/dd hh24:mi:ss') AS PJ_START, TO_CHAR(PJ_END, 'yyyy/MM/dd hh24:mi:ss') AS PJ_END
+			, TO_CHAR(PJ_PREDICT, 'yyyy/MM/dd hh24:mi:ss') AS PJ_PREDICT, PJ_COMPLETE, PJ_FILE 
+		FROM V_BIZ_PJ_LIST 
+		WHERE PJ_CODE=#{pj_code} and MEM_NUM=#{mem_num}
+    </select>
+    
+<!-- 프로젝트 진행률 -->
+    <select id="biz_sel_pj_attain" parameterType="int" resultType="int">
+    	SELECT NVL((SUM(TASK_ATTAIN)/COUNT(TASK_ATTAIN)), 0) AS PJ_ATTAIN FROM V_BIZ_TASK where pj_code = #{pj_code}
+    </select>
+    
+    
+<!-- 내 프로젝트명 검색 -->	
+	<select id="biz_pj_search" parameterType="hashmap" resultType="java.util.Map">
+		SELECT PJ_CODE, AUTH_CODE, CREATOR_NAME, CREATOR_ID, PJ_IMPORTANT, SHARE_CODE, PJ_TITLE, PJ_SUMMARY
+		    , TO_CHAR(PJ_START,'yyyy/mm/dd hh24:mi:ss') AS PJ_START, TO_CHAR(PJ_END,'yyyy/mm/dd hh24:mi:ss') AS PJ_END
+		    , TO_CHAR(PJ_PREDICT,'yyyy/mm/dd hh24:mi:ss') AS PJ_PREDICT, TO_CHAR(PJ_COMPLETE,'yyyy/mm/dd hh24:mi:ss') AS PJ_COMPLETE 
+		FROM V_BIZ_PJ_LIST 
+		WHERE MEM_NUM = #{mem_num} AND PJ_TITLE LIKE '%'||#{search}||'%' ORDER BY PJ_TITLE
+	</select>
+
+<!-- -프로젝트 완료일 업데이트(y면 업데이트, n이면 null 설정) -->
+    <update id="biz_up_complete" parameterType="hashmap">
+		{
+			call P_BIZ_PJ_complete(
+				#{pj_code}
+				, #{mem_num}
+				, #{state}
+			)
+		}
+	</update>
+	
+<!-- 프로젝트 수정 -->
+    <update id="biz_up_pj" parameterType="Biz_pj">
+		{
+			call P_BIZ_UP_pj_list(
+				#{pj_code}
+				, #{mem_num}
+				, #{pj_important}
+				, #{pj_title}
+				, #{pj_summary}
+				, #{pj_content}
+				, to_date(#{pj_start},'yyyy/mm/dd hh24:mi:ss')
+				, to_date(#{pj_end},'yyyy/mm/dd hh24:mi:ss')
+				, to_date(#{pj_predict},'yyyy/mm/dd hh24:mi:ss')
+				, #{pj_file}
+			)
+		}
+	</update>
+	
+    
+<!-- 프로젝트 삭제 -->	
+	<delete id="biz_del_pj" parameterType="hashmap">
+		{
+			call P_BIZ_DEL_pj(
+				#{pj_code}
+				, #{mem_num}
+			)
+		}
+	</delete>
+</mapper>

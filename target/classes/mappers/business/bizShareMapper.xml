@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.business.BizShareMapper">
+
+<!-- 로그인 유저 프로젝트 권한 확인 -->
+	<select id="biz_sel_auth_code" parameterType="hashmap" resultType="int">
+		SELECT AUTH_CODE FROM BIZ_SHARE WHERE MEM_NUM=#{mem_num} AND PJ_CODE=#{pj_code}
+	</select>
+	
+<!-- 공유회원번호 확인 -->	
+	<select id="biz_sel_sharecode" parameterType="hashmap" resultType="int">
+		SELECT share_code FROM BIZ_SHARE WHERE PJ_CODE=#{pj_code} AND MEM_NUM = #{mem_num}
+	</select>
+	
+<!-- 프로젝트별 참여멤버 -->
+	<select id="biz_sel_share_list" parameterType="int" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NAME, MEM_EMAIL, SHARE_CODE, AUTH_CODE, PJ_CODE 
+		from V_BIZ_SHARE 
+		WHERE PJ_CODE = #{pj_code} AND AUTH_CODE != 3 AND AUTH_CODE != 4 ORDER BY AUTH_CODE, SHARE_CODE
+	</select>
+	
+<!-- 프로젝트별 초대 및 대기멤버 -->
+	<select id="biz_sel_share_invite" parameterType="int" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NAME, MEM_EMAIL, SHARE_CODE, AUTH_CODE, PJ_CODE 
+		from V_BIZ_SHARE 
+		WHERE PJ_CODE = #{pj_code} AND (AUTH_CODE = 3 OR AUTH_CODE = 4) ORDER BY AUTH_CODE, SHARE_CODE
+	</select>
+	
+<!-- 회원권한 업데이트 -->	
+	<update id="biz_up_auth" parameterType="hashmap">
+		{
+			call P_BIZ_UP_share(
+				#{pj_code}
+				, #{mem_num}
+				, #{share_code}
+				, #{auth_code}
+			)
+		}
+	</update>
+	
+<!-- 프로젝트 멤버 제외 -->
+	<delete id="biz_del_share" parameterType="hashmap">
+		{
+			call P_BIZ_DEL_share(
+				#{pj_code}
+				, #{mem_num}
+				, #{share_code}
+			)
+		}
+	</delete>
+	
+</mapper>

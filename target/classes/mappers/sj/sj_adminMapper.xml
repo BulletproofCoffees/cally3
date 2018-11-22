@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.sj.sjadminMapper">
+
+ <select id="admin_w" resultType="map"> 
+ SELECT
+   ROUND(sum(v.amount*v.nutr_cont1)/count(*),1) nutr_cont1,
+   ROUND(sum(v.amount*v.nutr_cont2)/count(*),1) nutr_cont2,
+   ROUND(sum(v.amount*v.nutr_cont3)/count(*),1) nutr_cont3,
+   ROUND(sum(v.amount*v.nutr_cont4)/count(*),1) nutr_cont4
+FROM v_sj_sexcal v 
+WHERE 
+v.mem_sex = 'w'
+ </select>
+ 
+ <select id="admin_m" resultType="map"> 
+ SELECT
+   ROUND(sum(v.amount*v.nutr_cont1)/count(*),1) nutr_cont1,
+   ROUND(sum(v.amount*v.nutr_cont2)/count(*),1) nutr_cont2,
+   ROUND(sum(v.amount*v.nutr_cont3)/count(*),1) nutr_cont3,
+   ROUND(sum(v.amount*v.nutr_cont4)/count(*),1) nutr_cont4
+FROM v_sj_sexcal v 
+WHERE 
+v.mem_sex = 'm'
+ </select>
+ 
+  <select id="admin_foodlist" resultType="map"> 
+  SELECT * FROM c_sj_foods
+  </select>
+  
+  
+  <delete id="food_delete" parameterType="int" >
+DELETE FROM c_sj_foods f WHERE f.f_no = #{f_no}
+</delete>
+ 
+</mapper>

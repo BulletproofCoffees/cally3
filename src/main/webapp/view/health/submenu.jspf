@@ -1,0 +1,28 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <li><c:url value="/health/health_main" var="health_main"/><a class="callymenu c_health" href='${health_main}'>
+          <center>
+          <i class="fa fa-calendar" style="font-size:70px"></i>
+          </center>
+          <h5 class="centered" style="font-size:30px">fitness club!</h5></a></li>
+          <li><c:url value="/health/health_mypage" var="health_mypage"/>
+          <a class="callymenu c_health" href='${health_mypage}'><i class="fa fa-medkit"></i>내 정보</a></li>
+          <li><c:url value="/health/health_calorie" var="health_calorie"/>
+          <a class="callymenu c_health" href='${health_calorie}'><i class="fa fa-medkit"></i>칼로리처방</a></li>
+          <li><c:url value="/health/health_bmi" var="health_bmi"/>
+          <a class="callymenu c_health" href='${health_bmi}'><i class="fa fa-medkit"></i>BMI계산기</a></li>
+          <li><c:url value="/health/health_exercise" var="health_exercise"/>
+          <a class="callymenu c_health" href='${health_exercise}'><i class="fa fa-youtube-play"></i>운동선택</a></li>
+          <li><c:url value="/health/health_calculator" var="health_calculator"/>
+          <a class="callymenu c_health" href='${health_calculator}'><i class="fa fa-pencil-square-o"></i>칼로리계산기</a></li>
+          <li><c:url value="/health/health_write" var="health_write"/>
+          <a class="callymenu c_health" href='${health_write}'><i class="fa fa-pencil"></i>오늘의 몸무게 기록</a></li>
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>

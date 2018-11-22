@@ -1,0 +1,188 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<aside class="right-side">
+	<div class="user-head">
+		<c:if test="${my_auth_code eq 0 || my_auth_code eq 1}">
+			<a class="chat-tools btn-theme" onclick="share_cog()"><i
+				class="fas fa-user-cog"></i></a>
+		</c:if>
+		<a href="comment?pj_code=${pj_code}" class="chat-tools btn-theme"><i
+			class="fas fa-comments"></i></a> <a
+			href="task?pj_code=${pj_code}&state=y" class="chat-tools btn-theme"><i
+			class="fas fa-briefcase"></i></a> <a href="pj_detail?pj_code=${pj_code}"
+			class="chat-tools btn-theme"><i class="fas fa-laptop"></i></a>
+	</div>
+	<c:if test="${my_auth_code ne null}">
+		<div class="invite-row">
+			<h4 class="pull-left">참여 멤버</h4>
+			<c:if test="${my_auth_code < 3 }">
+				<a class="btn btn-theme04 pull-right" onclick="main_share_modal(${pj_code})">+ 초대</a>
+			</c:if>
+		</div>
+		<input type="hidden" id="share_pj_code" value="${pj_code}">
+		<ul class="chat-available-user share_ul" style="margin-left: 10px">
+			<c:forEach items="${share_list}" var="share" varStatus="status">
+				<li
+					class="share_li auth_code${share.AUTH_CODE} mem_id${share.MEM_ID}">
+					<input type="hidden" value="${share.SHARE_CODE}" id="share_code"
+					name="share_code"> <c:choose>
+						<c:when test="${share.AUTH_CODE eq 0}">
+							<a onclick="share_msg('${share.MEM_ID}', '${share.MEM_NAME}')">
+								<i class="fas fa-crown"></i><b>${share.MEM_NAME}(${share.MEM_ID})
+									${share.MEM_EMAIL}</b>
+							</a>
+						</c:when>
+						<c:when test="${share.AUTH_CODE eq 1 || share.AUTH_CODE eq 2}">
+							<a onclick="share_msg('${share.MEM_ID}', '${share.MEM_NAME}')">
+								<c:if test="${share.AUTH_CODE eq 1}">
+									<i class="fas fa-user-tie"></i>
+								</c:if> <c:if test="${share.AUTH_CODE eq 2}">
+									<i class="fa fa-user"></i>
+								</c:if> ${share.MEM_NAME}(${share.MEM_ID}) ${share.MEM_EMAIL}
+							</a>
+						</c:when>
+					</c:choose> <span class="auth_span pull-right share_cog"
+					onclick="share_del(${share.SHARE_CODE})"></span> <span
+					class="auth1_span pull-right share_cog"
+					onclick="share_down(${share.SHARE_CODE})" style="margin-right: 8px"></span>
+					<span class="auth2_span pull-right share_cog"
+					onclick="share_up(${share.SHARE_CODE})" style="margin-right: 8px"></span>
+				</li>
+			</c:forEach>
+		</ul>
+	</c:if>
+</aside>
+<script>
+
+function share_msg(id, name){
+	var pj_code ="${pj_code}";
+	$('#share_msg_modal #addressee_code').val($('.mem_id'+id).find('#share_code').val());
+	$('#share_msg_modal #add_mem_id').val(name + '(' + id + ')');
+	$('#share_msg_modal #pj_code').val(pj_code);
+	$('#share_msg_modal').modal('show');
+	
+}
+
+
+
+function share_del(share_code){
+	if (confirm("프로젝트에서 제외하시겠습니까?")) {
+		var data = {"pj_code":$('#share_pj_code').val(), "share_code":share_code, "auth_code":999};
+		auth_update(data);
+	}
+}
+
+function share_up(share_code){
+	if (confirm("권한을 팀장으로 변경하시겠습니까?")) {
+		var data = {"pj_code":$('#share_pj_code').val(), "share_code":share_code, "auth_code":1};
+		auth_update(data);
+	}
+}
+
+
+function share_down(share_code){
+	if (confirm("권한을 팀원으로 변경하시겠습니까?")) {
+		var data = {"pj_code":$('#share_pj_code').val(), "share_code":share_code, "auth_code":2};
+		auth_update(data);
+	}
+}
+
+function auth_update(data){
+	$.ajax({
+   		type : 'POST',
+   		url : '/cally/business/auth_update',
+   		data : data,
+		dataType : 'json',
+   		success : function(share_list) {
+   			var s_l = $(share_list);
+   			var list = "";
+   			for (var i = 0; i < s_l.size(); i++) {
+   				list += '<li class="share_li auth_code'+ s_l[i].AUTH_CODE + ' mem_id' + s_l[i].MEM_ID + '">';
+   				list += '<input type="hidden" value="' + s_l[i].SHARE_CODE + '" id="share_code" name="share_code">';
+    			if(s_l[i].AUTH_CODE == 0){
+   					list += '<i class="fas fa-crown"></i>';
+   					list += '<b> ' + s_l[i].MEM_NAME + '(' + s_l[i].MEM_ID + ') ' + s_l[i].MEM_EMAIL + '</b>';
+   				} else if(s_l[i].AUTH_CODE == 1 || s_l[i].AUTH_CODE == 2){
+    					list += '<a href="#">';
+   					if(s_l[i].AUTH_CODE == 1){
+   						list += '<i class="fas fa-user-tie"></i>';
+   					}else if(s_l[i].AUTH_CODE == 2){
+   						list += '<i class="fa fa-user"></i>';
+   					}
+   					list += ' ' + s_l[i].MEM_NAME + '(' + s_l[i].MEM_ID + ') ' + s_l[i].MEM_EMAIL + '</a>';
+   				} 
+    			list += '<span class="auth_span pull-right share_cog" onclick="share_del(' + s_l[i].SHARE_CODE + ')"></span>';
+   				list += '<span class="auth1_span pull-right share_cog" onclick="share_down(' + s_l[i].SHARE_CODE + ')" style="margin-right:8px"></span>';
+   				list += '<span class="auth2_span pull-right share_cog" onclick="share_up(' + s_l[i].SHARE_CODE + ')" style="margin-right:8px"></span>';
+   				list += '</li>';
+   			}
+   			$('.share_ul').empty();
+   			$('.share_ul').append(list);
+   			share_cog();
+   			alert("권한이 변경되었습니다.");
+   		},
+   		error: function(){
+   			alert("변경 실패");
+   		}
+   	});
+}
+
+function share_cog(){
+ 	$('.share_cog').empty();
+ 	$('.invite_li').remove();
+ 	share_invite();
+ 	var my_auth_code = "${my_auth_code}";
+ 	var loginUser = "${loginUser}";
+ 	var mem_id = mem_id+"${loginUser.mem_id}";
+ 	if(my_auth_code == 0){ 
+ 		if(!$('.share_li').hasClass(mem_id)){
+   		$('.auth_code1').find('.auth_span').append('<a class="biz_aTag"><i class="fas fa-user-minus biz_i_red"></i></a>');
+   		$('.auth_code1').find('.auth1_span').append('<a class="biz_aTag"><i class="fas fa-user biz_i_yellow"></i><i class="fas fa-level-down-alt biz_i_yellow" ></i></a>');
+   		$('.auth_code2').find('.auth_span').append('<a class="biz_aTag"><i class="fas fa-user-minus biz_i_red"></i></a>');
+   		$('.auth_code2').find('.auth2_span').append('<a class="biz_aTag"><i class="fas fa-user-tie biz_i_sky"></i><i class="fas fa-level-up-alt biz_i_sky"></i></a>');
+   		$('.auth_code3').find('.auth3_span').append('<a class="biz_aTag"><i class="fas fa-user-plus biz_i_green"></i></a>');
+ 		}
+ 	}else if(my_auth_code == 1){
+ 		if(!$('.share_li').hasClass(mem_id)){
+ 			$('.auth_code2').find('.auth_span').append('<a class="biz_aTag"><i class="fas fa-user-minus" style="color: #d9534f"></i></a>');
+ 			$('.auth_code2').find('.auth2_span').append('<a class="biz_aTag"><i class="fas fa-user-tie biz_i_sky"></i><i class="fas fa-level-up-alt biz_i_sky"></i></a>');
+ 			$('.auth_code3').find('.auth3_span').append('<a class="biz_aTag"><i class="fas fa-user-plus biz_i_green"></a>');
+ 		}
+ 	}
+}
+
+
+function share_invite(){
+	var pj_code = $('#share_pj_code').val();
+	$.ajax({
+   		type : 'POST',
+   		url : '/cally/business/share_invite',
+   		data : {'pj_code' : pj_code},
+		dataType : 'json',
+   		success : function(share_invite) {
+    		var s_i = $(share_invite);
+   			var list = "";
+   			for (var i = 0; i < s_i.size(); i++) {
+   				list += '<li class="share_li invite_li auth_code'+ s_i[i].AUTH_CODE + ' mem_id' + s_i[i].MEM_ID + '">';
+   				list += '<input type="hidden" value="' + s_i[i].SHARE_CODE + '" id="share_code" name="share_code">';
+   				list += '<a onclick="share_msg(' + "'" + s_i[i].MEM_ID + "','" + s_i[i].MEM_NAME + "'" + ')">';
+     			if(s_i[i].AUTH_CODE == 3){
+   					list += '<i class="far fa-user"></i>';
+   				}else if(s_i[i].AUTH_CODE == 4){
+   					list += '<i class="fas fa-user-clock"></i>';
+   				}
+   				list += ' ' + s_i[i].MEM_NAME + '(' + s_i[i].MEM_ID + ') ' + s_i[i].MEM_EMAIL + '</a>';
+   				if(s_i[i].AUTH_CODE == 3){
+    				list += '<span class="auth_span pull-right share_cog" onclick="share_del(' + s_i[i].SHARE_CODE + ')"><a class="biz_aTag"><i class="fas fa-user-minus" style="color: #d9534f"></i></a></span>';
+    				list += '<span class="auth3_span pull-right share_cog" onclick="share_down(' + s_i[i].SHARE_CODE + ')" style="margin-right:8px"><a class="biz_aTag"><i class="fas fa-user biz_i_green"></i><i class="fas fa-level-up-alt biz_i_green"></i></a></span>';
+   				}else if(s_i[i].AUTH_CODE == 4){
+   					list += '<span class="auth_span pull-right share_cog" onclick="share_del(' + s_i[i].SHARE_CODE + ')"><a class="biz_aTag"><i class="fas fa-user-minus" style="color: #d9534f"></i></a></span>';
+   				}
+   				list += '</li>';
+   			}
+   			$('.share_ul').append(list);
+   		}
+   	});	
+}
+
+</script>

@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/* 강의계획서조회 */
+#lec_plan .lec_search {width:100%; text-align:center; height:40px; }
+#lec_plan .lec_search .like_th {text-align:right; font-weight:bold; width:80px; padding-right:10px;}
+#lec_plan .lec_search span {line-height:30px;}
+#lec_plan .lec_search tr {}
+#lec_plan .lec_search td {padding:10px 3px 0;}
+.lec_button {width:3% !important; text-align:right;}
+
+#plan_info th { width:10%; background:#eee;text-align:center;}
+#plan_info .like_th {width:10% !important;text-align:center;}
+#plan_info td { width:20%;}
+
+#apply {text-align:center;}
+#apply th {width:17%;background:#eee;}
+
+#eval .eval_search {float:right; margin:10px 43px 0 0;}
+#eval .eval_search td {padding-right:10px;}
+.eval_cont th {background:#eee; text-align:center;}
+.eval_cont { text-align:center;}
+
+#indi_time th { text-align:center; background:#eee;}
+#indi_time th:first-child {width:15%;}
+
+
+#plan_cont th {width:8%; background:#eee; text-align:center;}
+#plan_cont td {height:30px;}
+#lec_leave th {background:#eee;}

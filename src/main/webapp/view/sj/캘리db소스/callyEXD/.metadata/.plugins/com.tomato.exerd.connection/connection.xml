@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+  <connection>
+    <productId>com.tomato.db.oracle_10g</productId>
+    <productName>Oracle 9i ~ 12c</productName>
+    <name>test</name>
+    <driverJar>C:\app\hankyung\product\11.2.0\dbhome_1\jdbc\lib\ojdbc6.jar</driverJar>
+    <driverClass>oracle.jdbc.OracleDriver</driverClass>
+    <url>jdbc:oracle:thin:@localhost:1521:orcl</url>
+    <properties>
+      <user>hr</user>
+      <port>1521</port>
+      <password>hr</password>
+      <sId>orcl</sId>
+      <host>localhost</host>
+      <internal_logon>normal</internal_logon>
+    </properties>
+    <extendedProperties>
+      <connectionString />
+    </extendedProperties>
+  </connection>
+  <connection>
+    <productId>com.tomato.db.oracle_10g</productId>
+    <productName>Oracle 9i ~ 12c</productName>
+    <name>cally</name>
+    <driverJar>C:\app\hankyung\product\11.2.0\dbhome_1\jdbc\lib\ojdbc6.jar</driverJar>
+    <driverClass>oracle.jdbc.OracleDriver</driverClass>
+    <url>jdbc:oracle:thin:@192.168.1.4:1521:orcl</url>
+    <properties>
+      <user>cally</user>
+      <port>1521</port>
+      <password>cally</password>
+      <sId>orcl</sId>
+      <host>192.168.1.4</host>
+      <internal_logon>normal</internal_logon>
+    </properties>
+    <extendedProperties>
+      <connectionString />
+    </extendedProperties>
+  </connection>
+  <connection>
+    <productId>com.tomato.db.oracle_10g</productId>
+    <productName>Oracle 9i ~ 12c</productName>
+    <name>집</name>
+    <driverJar>D:\app\choi\product\11.2.0\dbhome_1\jdbc\lib\ojdbc6.jar</driverJar>
+    <driverClass>oracle.jdbc.OracleDriver</driverClass>
+    <url>jdbc:oracle:thin:@localhost:1521:orcl</url>
+    <properties>
+      <user>cally</user>
+      <port>1521</port>
+      <password>cally</password>
+      <sId>orcl</sId>
+      <host>localhost</host>
+      <internal_logon>normal</internal_logon>
+    </properties>
+    <extendedProperties>
+      <connectionString />
+    </extendedProperties>
+  </connection>
+</database>
+

@@ -1,0 +1,88 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+   <!-- 가계부용 css --> 
+     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-datepicker/css/datepicker.css" />
+     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/daterangepicker.css" />
+   <!-- 가계부용 js -->
+   
+  
+  
+<style>
+.callymenu{
+	color: #666666 !important;
+}
+.c_member{
+	color: #4ECDC4 !important;
+}
+.clear {
+clear: both;
+}
+.ac-sub-report {
+color : #aeb2b7;
+margin-left: 11px;
+margin-right: 4px;
+}
+.ac-sub-report > p {
+margin-bottom: 15px;
+}
+.c-theme {
+color: #4ECDC4;
+}
+.c-theme02 {
+color: #ac92ec;
+}
+.c-default {
+font-weight: bolder;
+color: white;
+}
+.ac-sub-report > .pull-left {
+margin-left:19px;
+}
+
+.ac-sub-report > .c-default, .ac-sub-report > .c-theme, .ac-sub-report > .c-theme02 {
+margin-left: 6px;
+}
+
+</style>
+
+
+    <!--header end-->
+    <!-- **********************************************************************************************************************************************************
+        MAIN SIDEBAR MENU
+        *********************************************************************************************************************************************************** -->
+    <!--sidebar start-->
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <br><li><h5 class="centered">${sessionScope.loginAdmin.adm_id}님</h5></li><br>
+          <li class="sub-menu">
+            <a href="/cally/admin/member">
+              <i class="fa fa-pencil fa-pencil-alt"></i>
+              <span>회원목록</span>
+              </a>
+         
+          </li>
+          
+          
+          <li>
+          <hr>
+          <div class="ac-sub-report">
+          <p><i class="fa fa-trophy"></i> 회원 상태</p>
+          <label class="pull-left c-theme"><i class="fa fa-plus"></i> 활동회원</label>
+          <label class="pull-right c-theme">${sum_y}명</label><br>
+          <div class="clear"></div>
+          <label class="pull-left c-theme02"><i class="fa fa-minus"></i> 탈퇴회원</label>
+          <label class="pull-right c-theme02">${sum_n}명</label><br>
+          <div class="clear"></div>
+          <label class="pull-left c-default"><i class="fa fa-krw"></i> 전체회원</label>
+          <label class="pull-right c-default">${sum_y + sum_n}명</label><br>
+          </div>
+          
+          </li>
+          
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>
+    <!--sidebar end-->

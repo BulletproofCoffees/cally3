@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.AccoMapper">
+<select id="count_acco" parameterType="int" resultType="int">
+SELECT count(*) FROM AC_ACCO WHERE MEM_NUM=#{mem_num}
+</select>
+
+<select id="first_acco"  statementType="CALLABLE" parameterType="int">
+		{
+			call p_ac_first(#{mem_num})
+		}
+</select>
+
+<select id="all_acco"  parameterType="int" resultType="java.util.Map">
+SELECT ACC_CODE, MEM_NUM, ACC_NAME, ACCPROP_CODE, ACC_USEYN, TO_CHAR(ACC_CREDATE,'MM-dd-YYYY') AS ACC_CREDATE FROM AC_ACCO WHERE MEM_NUM = #{mem_num} ORDER BY ACCPROP_CODE ASC
+</select>
+
+<select id="use_acco"  parameterType="int" resultType="java.util.Map">
+SELECT ACC_CODE, MEM_NUM, ACC_NAME, ACCPROP_CODE FROM AC_ACCO WHERE MEM_NUM = #{mem_num} AND ACC_USEYN='y' ORDER BY ACCPROP_CODE ASC
+</select>
+
+<select id="in_acco" parameterType="java.util.Map">
+{
+			call p_ac_newacco(#{mem_num},
+							#{acc_name},
+							#{accprop_code},
+							#{acc_credate},
+							#{acc_useyn})
+		}
+</select>
+
+<select id="name_acco" parameterType="java.util.Map" resultType="int">
+SELECT count(*) FROM AC_ACCO WHERE MEM_NUM = #{mem_num} AND ACC_NAME = #{acc_name}
+</select>
+<select id="up_acco" statementType="CALLABLE" parameterType="java.util.Map">
+{
+			call p_ac_upacco(#{mem_num},
+							#{acc_code},
+							#{acc_name},
+							#{accprop_code},
+							#{acc_useyn},
+							#{acc_credate},
+							#{message, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String}
+							)
+		}
+</select>
+<select id="del_acco" statementType="CALLABLE" parameterType="java.util.Map">
+{
+			call p_ac_delacco(#{mem_num},
+							#{acc_code},
+							#{message, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String}
+							)
+		}
+</select>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TbookingMapper">
+	<select id="stationInfo" resultType="java.util.Map">
+	select * from t_st_info
+	</select>
+	<select id="trainList" resultType="java.util.Map">
+	select tn_num from t_sp_st
+	</select>
+</mapper>

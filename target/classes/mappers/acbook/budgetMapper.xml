@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.BudgetMapper">
+
+<select id="check_budget" parameterType="java.util.Map" resultType="int">
+SELECT count(*) from ac_budget WHERE MEM_NUM = #{mem_num} and BUDGET_DATE = TO_DATE(#{budget_date},'YYYY/MM')
+</select>
+
+<select id="list_budget" parameterType="java.util.Map" resultType="Ac_Budget">
+select CATE_CODE, CATE_NAME, BUDGET_VALUE from v_ac_budget where mem_num = #{mem_num} and budget_date = TO_DATE(#{budget_date},'YYYY/MM') ORDER BY CATE_CODE
+</select>
+
+<select id="in_budget" parameterType="java.util.Map">
+		{
+			call p_ac_budget(
+				#{mem_num}
+				, #{budget_date}
+				, #{cate_code}
+				, #{budget_value}
+			)
+		}
+</select>
+
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.business.BizTaskMapper">
+
+	<insert id="biz_in_task" parameterType="Biz_task">
+			{
+			call P_BIZ_IN_task(
+				#{share_code}
+				, #{task_title}
+				, #{task_important}
+				, to_date(#{task_start},'yyyy/mm/dd hh24:mi:ss')
+				, to_date(#{task_end},'yyyy/mm/dd hh24:mi:ss')
+				, #{task_content}
+				, #{task_file}
+				, #{task_attain}
+				, #{r_c_code}
+			)
+		}
+	</insert>
+	
+	<!-- 업무일정 수정-->
+	<update id="p_biz_up_task" parameterType="Biz_task">
+		{
+			call P_BIZ_UP_task(
+				#{pj_code}
+				, #{pj_t_code}
+				, #{mem_num}
+				, #{task_title}
+				, #{task_important}
+				, to_date(#{task_start},'yyyy/mm/dd hh24:mi:ss')
+				, to_date(#{task_end},'yyyy/mm/dd hh24:mi:ss')
+				, #{task_content}
+				, #{task_file}
+				, #{task_attain}
+				, #{r_c_code}
+			)
+		}
+	</update>
+	
+<!-- 나의 업무내역 전체 (진행중 및 수락대기중) -->
+	<select id="biz_sel_task" parameterType="hashmap" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, MEM_NAME, PJ_CODE, PJ_TITLE, SHARE_CODE, PJ_T_CODE, TASK_TITLE, TASK_IMPORTANT
+    	, TO_CHAR(TASK_START,'yyyy/mm/dd hh24:mi:ss') AS TASK_START, TO_CHAR(TASK_END,'yyyy/mm/dd hh24:mi:ss') AS TASK_END
+    	, TASK_CONTENT, TASK_FILE, TASK_ATTAIN, TASK_STATE, r_c.r_c_color 
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c
+		WHERE MEM_NUM = #{mem_num} AND TASK_STATE = #{task_state} AND t.r_c_code = r_c.r_c_code (+) ORDER BY PJ_T_CODE DESC
+	</select>
+	
+
+<!-- 나의 업무내역 검색 -->
+	<select id="biz_sel_mytask_search" parameterType="hashmap" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, MEM_NAME, PJ_CODE, SHARE_CODE, AUTH_CODE, PJ_T_CODE, TASK_TITLE, TASK_IMPORTANT 
+		    , to_char(TASK_START, 'YYYY/MM/DD HH24:mi') AS TASK_START, to_char(TASK_END, 'YYYY/MM/DD HH24:mi') AS TASK_END 
+		    , TASK_CONTENT, TASK_FILE, TASK_ATTAIN, TASK_STATE, r_c.r_c_color 
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c 
+		WHERE t.r_c_code = r_c.r_c_code (+) AND MEM_NUM = #{mem_num} AND TASK_TITLE LIKE '%'||#{search}||'%' ORDER BY TASK_TITLE
+	</select>
+	
+<!-- 업무내역 상세 -->
+	<select id="biz_sel_task_detail" parameterType="hashmap" resultType="Biz_task">
+		SELECT MEM_ID, MEM_NUM, MEM_NAME, PJ_CODE, SHARE_CODE, PJ_T_CODE, TASK_TITLE, TASK_IMPORTANT
+    	, TO_CHAR(TASK_START,'yyyy/mm/dd hh24:mi:ss') AS TASK_START, TO_CHAR(TASK_END,'yyyy/mm/dd hh24:mi:ss') AS TASK_END
+    	, TASK_CONTENT, TASK_FILE, TASK_ATTAIN, TASK_STATE, t.r_c_code, r_c.r_c_color 
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c 
+		WHERE MEM_NUM = #{mem_num} AND PJ_T_CODE = #{pj_t_code} AND t.r_c_code = r_c.r_c_code (+)
+	</select>
+		
+<!-- 중요 업무내역 -->	
+	<select id="biz_sel_task_im" parameterType="int" resultType="java.util.Map">
+		SELECT t.*, r_c.r_c_color  
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c 
+		WHERE MEM_NUM = #{mem_num} AND TASK_IMPORTANT = 'y' AND TASK_STATE = 'y' AND t.r_c_code = r_c.r_c_code (+) ORDER BY PJ_T_CODE DESC
+	</select>
+	
+<!-- 프로젝트별 업무내역(수락전후) -->
+	<select id="biz_sel_task_state" parameterType="hashmap" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, MEM_NAME, PJ_CODE, SHARE_CODE, AUTH_CODE, PJ_T_CODE, TASK_TITLE, TASK_IMPORTANT
+		, to_char(TASK_START, 'YYYY/MM/DD HH24:mi') AS TASK_START, to_char(TASK_END, 'YYYY/MM/DD HH24:mi') AS TASK_END
+		, TASK_CONTENT, TASK_FILE, TASK_ATTAIN, TASK_STATE, r_c.r_c_color 
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c 
+		WHERE PJ_CODE = #{pj_code} AND TASK_STATE = #{task_state} AND t.r_c_code = r_c.r_c_code (+) ORDER BY PJ_T_CODE DESC
+	</select>
+	
+<!-- 프로젝트별 나의 업무내역(수락전후) -->
+	<select id="biz_sel_pjtask_state" parameterType="hashmap" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, MEM_NAME, PJ_CODE, SHARE_CODE, AUTH_CODE, PJ_T_CODE, TASK_TITLE, TASK_IMPORTANT
+		, to_char(TASK_START, 'YYYY/MM/DD HH24:mi') AS TASK_START, to_char(TASK_END, 'YYYY/MM/DD HH24:mi') AS TASK_END
+		, TASK_CONTENT, TASK_FILE, TASK_ATTAIN, TASK_STATE, r_c.r_c_color 
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c 
+		WHERE PJ_CODE = #{pj_code} AND TASK_STATE = #{task_state} AND MEM_NUM = #{mem_num} AND t.r_c_code = r_c.r_c_code (+) ORDER BY PJ_T_CODE DESC
+	</select>
+	
+<!-- 프로젝트별 업무내역 검색 -->
+	<select id="biz_sel_pjtask_search" parameterType="hashmap" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, MEM_NAME, PJ_CODE, SHARE_CODE, AUTH_CODE, PJ_T_CODE, TASK_TITLE, TASK_IMPORTANT
+		    , to_char(TASK_START, 'YYYY/MM/DD HH24:mi') AS TASK_START, to_char(TASK_END, 'YYYY/MM/DD HH24:mi') AS TASK_END
+		    , TASK_CONTENT, TASK_FILE, TASK_ATTAIN, TASK_STATE, r_c.r_c_color 
+		FROM V_BIZ_TASK t, BIZ_RANGE_COLOR r_c 
+		WHERE t.r_c_code = r_c.r_c_code (+) AND PJ_CODE = #{pj_code} AND TASK_TITLE LIKE '%'||#{search}||'%' ORDER BY PJ_TITLE
+	</select>
+	
+	
+<!-- 업무내역 날짜 변경 업데이트 -->	
+	<update id="biz_up_task_date" parameterType="hashmap">
+		UPDATE BIZ_TASK SET TASK_START = to_date(#{task_start},'yyyy/mm/dd hh24:mi:ss'),TASK_END = to_date(#{task_end},'yyyy/mm/dd hh24:mi:ss') WHERE PJ_T_CODE=#{pj_t_code}
+	</update>
+	
+<!-- 업무내역 삭제 -->
+	<delete id="biz_del_task" parameterType="hashmap">
+		{
+			call P_BIZ_DEL_task(
+				#{pj_t_code}
+				, #{mem_num}
+			)
+		}
+	</delete>
+	
+	
+<!-- 업무 승인 -->
+	<update id="biz_up_task_state" parameterType="hashmap">
+		{
+			call P_BIZ_UP_task_state(
+				#{pj_code}
+				, #{pj_t_code}
+				, #{mem_num}
+			)
+		}
+	</update>
+
+</mapper>

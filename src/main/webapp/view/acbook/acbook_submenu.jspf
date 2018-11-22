@@ -1,0 +1,204 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+   <!-- 가계부용 css --> 
+     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-datepicker/css/datepicker.css" />
+     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/daterangepicker.css" />
+   <!-- 가계부용 js -->
+   
+  
+  
+<style>
+.callymenu{
+	color: #666666 !important;
+}
+.c_acbook{
+	color: #4ECDC4 !important;
+}
+.clear {
+clear: both;
+}
+.numeric {
+text-align: right;
+}
+.ac-sub-report {
+color : #aeb2b7;
+margin-left: 11px;
+margin-right: 4px;
+}
+.ac-sub-report > p {
+margin-bottom: 15px;
+}
+.c-theme {
+color: #4ECDC4;
+}
+.c-theme02 {
+color: #ac92ec;
+}
+.c-default {
+font-weight: bolder;
+color: white;
+}
+
+.c-danger{
+color: red;
+}
+.ac-sub-report > .pull-left {
+margin-left:19px;
+}
+
+.ac-sub-report > .c-default, .ac-sub-report > .c-theme, .ac-sub-report > .c-theme02 {
+margin-left: 6px;
+}
+
+.sub_search {
+
+}
+
+    .movemonth, .moveyear {
+    cursor : pointer;
+    }
+    
+    .movemonth:hover, .moveyear:hover {
+    color: #ac92ec;
+    }
+
+    .in-table {
+    height: 18px;
+    border: 0px;
+    background-color: rgba(0,0,0,0);
+    padding: 0px 5px;
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0);
+    }
+</style>
+
+
+    <!--header end-->
+    <!-- **********************************************************************************************************************************************************
+        MAIN SIDEBAR MENU
+        *********************************************************************************************************************************************************** -->
+    <!--sidebar start-->
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <br><li><h5 class="centered">${sessionScope.loginUser.mem_name}님</h5></li><br>
+          <li class="sub-menu">
+            <a href="javascript:;" id="ac_sub_1">
+              <i class="fa fa-pencil fa-pencil-alt"></i>
+              <span>쓰기</span>
+              </a>
+            <ul class="sub">
+              <li id="ac_sub_calendar" ><a href="/cally/acbook">달력</a></li>
+              <li id="ac_sub_income"><a href="/cally/acbook/income">수입 쓰기</a></li>
+              <li id="ac_sub_expense"><a href="/cally/acbook/expense">지출 쓰기</a></li>
+            </ul>
+          </li>
+          
+          <li class="sub-menu">
+            <a href="javascript:;" id="ac_sub_2">
+              <i class="fa fa-desktop"></i>
+              <span>보고서</span>
+              </a>
+            <ul class="sub">
+              <li id="ac_sub_monthly"><a href="/cally/acbook/monthly">월간보고서</a></li>
+              <li id="ac_sub_annual"><a href="/cally/acbook/annual">연간보고서</a></li>
+              <li id="ac_sub_breakdown"><a href="/cally/acbook/breakdown">통장/카드 내역</a></li>
+              <li id="ac_sub_memo"><a href="/cally/acbook/memolist">메모 리스트</a></li>
+            </ul>
+          </li>
+          
+          <li class="sub-menu">
+            <a href="/cally/acbook/budget" id="ac_sub_3">
+              <i class="fa fa-flag"></i>
+              <span>예산 쓰기</span>
+              </a>
+          </li>
+          
+          <li class="sub-menu">
+            <a href="javascript:;" id="ac_sub_4">
+              <i class="fa fa-gear"></i>
+              <span>가계부 설정</span>
+              </a>
+            <ul class="sub">
+              <li id="ac_sub_category"><a href="/cally/acbook/category">분류 관리</a></li>
+              <li id="ac_sub_accountset"><a href="/cally/acbook/accountset">통장 관리</a></li>
+              <li id="ac_sub_cardset"><a href="/cally/acbook/cardset">카드 관리</a></li>
+            </ul>
+          </li>
+          
+          <li>
+          <hr>
+          <div class="ac-sub-report">
+          <p><i class="fa fa-trophy"></i> 이달의 가계</p>
+          <label class="pull-left c-theme"><i class="fa fa-plus"></i> 수입</label>
+          <label class="pull-right c-theme"><fmt:formatNumber value="${0 + acSub.s_sum_in}" /></label><br>
+          <div class="clear"></div>
+          <label class="pull-left c-theme02"><i class="fa fa-minus"></i> 지출</label>
+          <label class="pull-right c-theme02"><fmt:formatNumber value="${0 + acSub.s_sum_ex}"/></label><br>
+          <div class="clear"></div>
+          <label class="pull-left c-default"><i class="fa fa-krw"></i> 수입-지출</label>
+          <label class="pull-right c-default"><fmt:formatNumber value="${acSub.s_sum_in - acSub.s_sum_ex}"/></label><br>
+          </div>
+          
+          </li>
+          
+          <li>
+          <hr>
+          <div class="ac-sub-report">
+          <p><i class="fa fa-trophy"></i> 현재 자산현황</p>
+          <label class="pull-left c-theme"><i class="fa fa-plus"></i> 자산</label>
+          <label class="pull-right c-theme">632,000</label><br>
+          <div class="clear"></div>
+          <label class="pull-left "> 현금성자산</label>
+          <label class="pull-right ">32,000</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left "> 투자자산</label>
+          <label class="pull-right ">300,000</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left "> 기타자산</label>
+          <label class="pull-right ">300,000</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left c-theme02"><i class="fa fa-minus"></i> 부채</label>
+          <label class="pull-right c-theme02">-600,000</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left "> 대출</label>
+          <label class="pull-right ">-550,000</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left "> 기타부채</label>
+          <label class="pull-right ">-50,000</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left "> 카드값</label>
+          <label class="pull-right ">0</label><br>
+          <div class="clear"></div>
+          
+          <label class="pull-left c-default"><i class="fa fa-krw"></i> 순자산</label>
+          <label class="pull-right c-default">32,000</label><br>
+          <div class="clear"></div>
+          </div>
+          
+          </li>
+          
+          <li>
+          <hr>
+        <div class="ac-sub-report">
+          가격정보 검색<br>
+          <div class="centerd">
+          <form action="/cally/acbook/nshopping" method="get">
+     <input type="text" class="sub_search" name="query" style="width: 143px;"><button class="btn btn-xs btn-theme" 
+     style="height: 24px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;"
+     type="submit"><i class="fa fa-search"></i></button>
+     </form>
+        </div>
+        </div>
+          </li>
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>
+    <!--sidebar end-->

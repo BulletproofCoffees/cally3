@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "mapper.hel.ExerciseMapper">
+<select id="se_exercise" resultType="java.util.Map">
+select * from hel_health , hel_health_code where hel_health.HH_CODE= hel_health_code.HH_CODE 
+</select>
+
+<select id="se_exercise_one" resultType="java.util.Map">
+select * from hel_health , hel_health_code 
+where hel_health.HH_CODE= hel_health_code.HH_CODE and hel_health.HH_CODE=#{HH_CODE}
+</select>
+
+<select id="se_exercise_code" resultType="java.util.Map">
+		select * from hel_health_code
+</select>
+
+<select id="se_food_code" resultType="java.util.Map">
+		select * from hel_food
+</select>
+
+
+
+<select id="se_exercise_met" resultType="java.util.Map">
+select * from hel_health , hel_met ,hel_met_code 
+where hel_health.H_KIND = hel_met.H_KIND and hel_met.HM_CODE = hel_met_code.HM_CODE
+</select>
+
+
+<select id="se_exercise_met_one" resultType="java.util.Map">
+select * from hel_health , hel_met ,hel_met_code
+where hel_health.H_KIND = hel_met.H_KIND and hel_met_code.HM_CODE = hel_met.HM_CODE and hel_met.H_KIND = #{H_KIND}
+</select>
+
+<select id="se_exercise_met_code" resultType="java.util.Map">
+		select * from hel_met_code
+</select>
+
+
+
+<select id="p_hel_video" parameterType="java.util.Map" statementType="CALLABLE">
+ 		{
+ 			call p_hel_video (
+ 				 #{HH_CODE}
+ 				, #{H_KEY}
+ 				, #{H_TITLE}
+ 				, #{H_COMMENT}
+ 				, #{H_CALORIE}
+ 				, #{E_NAME}
+ 				, #{E_IMG}
+
+ 			)
+ 		}
+</select>
+
+<select id="p_hel_cal_met" parameterType="java.util.Map" statementType="CALLABLE">
+ 		{
+ 			call p_hel_cal_met (
+ 				  #{HM_CODE}
+ 				, #{H_KIND}
+ 				, #{H_MET}
+
+ 			)
+ 		}
+</select>
+
+
+</mapper> 

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.DetailMapper">
+	<resultMap type="java.util.HashMap" id="basicmap">
+	</resultMap>
+
+<select id="cal_inlist" parameterType="java.util.Map" resultType="java.util.Map">
+SELECT SUM(DET_MONEY) as DET_MONEY, DET_DATE
+FROM V_AC_ALLDETAIL
+WHERE MEM_NUM = #{mem_num}
+AND inorex = 'i'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{year}||'/'||#{month}, 'YYYY/MM'), 'MM')
+AND  LAST_DAY(TO_DATE(#{year}||'/'||#{month}, 'YYYY/MM'))
+GROUP BY DET_DATE
+ORDER BY DET_DATE ASC
+</select>
+	<select id="cal_exlist" parameterType="java.util.Map" resultType="java.util.Map">
+SELECT SUM(DET_MONEY) as DET_MONEY, DET_DATE
+FROM V_AC_ALLDETAIL
+WHERE MEM_NUM = #{mem_num}
+AND inorex = 'e'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{year}||'/'||#{month}, 'YYYY/MM'), 'MM')
+AND  LAST_DAY(TO_DATE(#{year}||'/'||#{month}, 'YYYY/MM'))
+GROUP BY DET_DATE
+ORDER BY DET_DATE ASC
+</select>
+<select id="in_detail" statementType="CALLABLE" parameterType="java.util.Map" >
+{
+			call p_ac_indet(
+				#{mem_num}
+				, #{cate_code}
+				, #{sub_code}
+				, #{det_date}
+				, #{det_content}
+				, #{det_money}
+				, #{acc_code}
+				, #{card_code}
+			)
+		}
+</select>
+
+
+<select id="det_list" statementType="CALLABLE" parameterType="java.util.Map">
+ {
+			call p_ac_detail(
+				#{mem_num}
+				, #{inorex}
+				, #{from}
+				, #{to}
+				, #{detList, mode=OUT, jdbcType=CURSOR, javaType=java.sql.ResultSet, resultMap=basicmap}
+			)
+		} 
+</select>
+
+<delete id="del_detail" parameterType="int">
+DELETE FROM AC_DETAIL WHERE DET_CODE = #{det_code}
+</delete>
+
+<select id="mon_ex_bycate" parameterType="java.util.Map"  resultType="java.util.Map">
+SELECT CATE_CODE, CATE_NAME, SUM(DET_MONEY) as DET_MONEY FROM V_AC_ALLDETAIL
+WHERE MEM_NUM = #{mem_num} AND inorex = 'e'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{det_date},'YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date},'YYYY/MM'))
+GROUP BY CATE_CODE, CATE_NAME
+ORDER BY CATE_CODE ASC
+</select>
+
+<select id="mon_ex_bycate2"  parameterType="java.util.Map"  resultType="java.util.Map">
+select a.cate_name, NVL(det_money, 0) as det_money
+from 
+(select cate_name, cate_code
+from ac_category where inorex = 'e') a 
+,
+(select cate_code, cate_name,  sum(det_money) det_money from 
+v_ac_alldetail where mem_num =#{mem_num}  and inorex= 'e'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{det_date},'YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date},'YYYY/MM'))
+group by cate_code, cate_name)  b
+where a.cate_code = b.cate_code (+)
+order by a.cate_code asc
+</select>
+
+<select id="mon_in_bycate" parameterType="java.util.Map"  resultType="java.util.Map">
+select a.cate_name, NVL(det_money, 0) as det_money
+from 
+(select cate_name, cate_code
+from ac_category where inorex = 'i') a 
+,
+(select cate_code, cate_name,  sum(det_money) det_money from 
+v_ac_alldetail where mem_num =#{mem_num}  and inorex= 'i'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{det_date},'YYYY/MM'),'MM')
+AND LAST_DAY(TO_DATE(#{det_date},'YYYY/MM'))
+group by cate_code, cate_name)  b
+where a.cate_code = b.cate_code (+)
+order by a.cate_code asc
+</select>
+
+
+<select id="mon_in_sum" parameterType="java.util.Map" resultType="int">
+SELECT sum(DET_MONEY) FROM V_AC_ALLDETAIL
+WHERE MEM_NUM = #{mem_num} AND inorex = 'i'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{det_date},'YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date},'YYYY/MM'))
+</select>
+
+<select id="mon_ex_sum" parameterType="java.util.Map" resultType="int">
+SELECT sum(DET_MONEY) FROM V_AC_ALLDETAIL
+WHERE MEM_NUM = #{mem_num} AND inorex = 'e'
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{det_date},'YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date},'YYYY/MM'))
+</select>
+<select id="sub_info" statementType="CALLABLE" parameterType="java.util.Map">
+ {
+			call p_ac_submenu(
+				#{mem_num, mode=IN, jdbcType=NUMERIC, javaType=java.lang.Integer}
+				,#{s_sum_in, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Integer}
+				, #{s_sum_ex, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Integer}
+			)
+		} 
+</select>
+
+<select id="mon_sub" parameterType="java.util.Map" resultType="java.util.Map">
+select a.sub_name, NVL(det_money, 0) as det_money
+from 
+(select mem_num, cate_code, sub_name, sub_code
+from ac_subclass where (mem_num =#{mem_num} or mem_num is null) and cate_code =#{cate_code}) a 
+,
+(select sub_code,  sum(det_money) det_money from 
+v_ac_alldetail where mem_num =#{mem_num}  and cate_code =#{cate_code}
+AND DET_DATE BETWEEN TRUNC(TO_DATE(#{det_date},'YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date},'YYYY/MM'))
+group by sub_code)  b
+where a.sub_code = b.sub_code (+)
+</select>
+</mapper>

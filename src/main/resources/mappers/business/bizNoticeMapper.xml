@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.business.BizNoticeMapper">
+
+	<!-- 메세지 작성 -->
+	<insert id="biz_in_notice_msg" parameterType="hashmap">
+		{
+			call P_BIZ_IN_notice(
+				#{addressee_code}
+				, #{sender_code}
+				, #{notice_content}
+				, #{state_code}
+			)
+		}
+	</insert>
+	
+	<!-- 프로젝트 초대 -->
+	<insert id="biz_in_notice_invite">
+		{
+			call P_BIZ_IN_notice_invite(
+				#{mem_id}
+				, #{sender_code}
+				, #{notice_content}
+				, #{pj_code}
+			)
+		}
+	</insert>
+	
+	<!-- 새로운 사용자 알림 -->
+	<select id="biz_sel_notice" parameterType="int" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, USER_N_CODE, ADDRESSEE_CODE, ADD_NAME, SENDER_CODE, SENDER_NAME, SENDER_ID, TO_CHAR(NOTICE_DATE, 'YYYY/MM/DD HH24:mi:ss') AS NOTICE_DATE, NOTICE_CONTENT, STATE_CODE FROM V_BIZ_NOTICE WHERE MEM_NUM = #{mem_num} AND STATE_CODE != 2 ORDER BY USER_N_CODE DESC
+	</select>
+	
+	<!-- 사용자 전체 알림 -->
+	<select id="biz_sel_notice_all" parameterType="int" resultType="java.util.Map">
+		SELECT MEM_ID, MEM_NUM, USER_N_CODE, ADDRESSEE_CODE, ADD_NAME, SENDER_CODE, SENDER_NAME, SENDER_ID, TO_CHAR(NOTICE_DATE, 'YYYY/MM/DD HH24:mi:ss') AS NOTICE_DATE, NOTICE_CONTENT, STATE_CODE FROM V_BIZ_NOTICE WHERE MEM_NUM = #{mem_num} ORDER BY USER_N_CODE DESC
+	</select>
+	
+	<!-- 새로운 알림 갯수 -->
+	<select id="biz_sel_notice_new" parameterType="int" resultType="int">
+		SELECT COUNT(*)AS NEW_NOTICE from V_BIZ_NOTICE WHERE MEM_NUM = #{mem_num} AND STATE_CODE != 2
+	</select>
+	
+		<!-- 새로운 알림 갯수 -->
+	<select id="biz_sel_notice_search" parameterType="hashmap" resultType="java.util.Map">
+		SELECT * FROM V_BIZ_NOTICE WHERE MEM_NUM = #{mem_num} AND NOTICE_CONTENT LIKE '%'||#{search}||'%' ORDER BY NOTICE_CONTENT
+	</select>
+	
+	<!-- 알림 확인 -->
+	<update id="biz_up_notice_state" parameterType="int">
+		{
+			call P_BIZ_UP_n_state(
+				#{user_n_code}
+			)
+		}		
+	</update>
+	
+	<!-- 프로젝트 수락 거절 -->
+	<update id="biz_up_notice_invite" parameterType="hashmap">
+		{
+			call P_BIZ_UP_invite(
+				#{user_n_code}
+				, #{addressee_code}
+				, #{sender_code}
+				, #{state_code}
+			)
+		}
+	</update>
+	
+	<delete id="biz_del_notice" parameterType="int">
+		{
+		 	call P_BIZ_DEL_notice(
+		 		#{user_n_code}
+		 	)
+		}
+	</delete>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.AnnualMapper">
+
+<select id="annual_inex" parameterType="java.util.Map" resultType="int">
+select NVL(b.det_money, 0) as det_money
+from (select * from v_ac_emptyyear) a
+,
+(select TO_CHAR(det_date, 'MM') as det_date, sum(det_money) as det_money
+from v_ac_alldetail
+where mem_num = #{mem_num} and cate_code = #{cate_code}
+and det_date BETWEEN TRUNC(TO_DATE(#{det_date}||'/01','YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date}||'/12','YYYY/MM'))
+group by TO_CHAR(det_date, 'MM')) b
+where a.det_date = b.det_date (+)
+order by a.det_date asc
+</select>
+
+<select id="year_in_sum" parameterType="java.util.Map" resultType="int">
+select sum(det_money) as det_money
+FROM V_AC_AllDetail
+where mem_num = #{mem_num} and inorex = 'i'
+and det_date BETWEEN TRUNC(TO_DATE(#{det_date}||'/01','YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date}||'/12','YYYY/MM'))
+</select>
+
+<select id="year_ex_sum" parameterType="java.util.Map" resultType="int">
+select sum(det_money) as det_money
+FROM V_AC_AllDetail
+where mem_num = #{mem_num} and inorex = 'e'
+and det_date BETWEEN TRUNC(TO_DATE(#{det_date}||'/01','YYYY/MM'),'MM') AND LAST_DAY(TO_DATE(#{det_date}||'/12','YYYY/MM'))
+</select>
+
+</mapper>
+

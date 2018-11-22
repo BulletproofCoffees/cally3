@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.lec.lectureMapper">
+
+<select id="st_info" parameterType="int" resultType="java.lang.String">
+SELECT LEC_ST_INFO FROM LEC_ST_INFO WHERE MEM_NUM=#{mem_num}
+</select>
+
+<insert id="lec_st_insert">
+INSERT INTO lec_st_info(mem_num, lec_st_info, lec_st_po) VALUES (#{mem_num}, 'a', 17)
+</insert>
+
+
+<!-- 수강신청 -->
+<select id="all_lec" resultType="Lec_Lecsearch">
+SELECT * FROM LEC_SCHELIST_VIEW
+</select>
+
+<select id="p_lec_app" statementType="CALLABLE" 
+parameterType="java.util.Map">
+{call P_LEC_APP(
+	#{mem_num}, #{lec_day}, #{lec_hour}, 
+	#{lec_sche_code}, #{lec_point}, 
+	#{lec_msg, mode=OUT, jdbcType=NVARCHAR,
+	javaType=java.lang.String})}
+ </select>
+ 
+<!-- 강의검색 -->
+<select id="search_lec" parameterType="Lec_Lecsearch" 
+resultType="Lec_Lecsearch">
+select * from LEC_SCHELIST_VIEW where LEC_SEM_CODE=182
+AND LEC_DAN=#{lec_dan} AND LEC_NAME LIKE '%'||#{lec_name}||'%'
+</select>
+
+<!-- 개인신청강의검색 -->
+<select id="search_indi_lec" parameterType="int" resultType="Lec_Lecsearch">
+SELECT SV.LEC_TYPE, SV.LEC_SCHE_CODE, SV.LEC_NAME, SV.LEC_POINT, SV.LEC_DAY, SV.LEC_HOUR, SV.LEC_PRO_NAME, SV.LEC_SEM_CODE, A.LEC_APP_CODE FROM LEC_APP A, LEC_SCHELIST_VIEW SV WHERE A.LEC_SCHE_CODE=SV.LEC_SCHE_CODE AND A.MEM_NUM=#{mem_num} AND SV.LEC_SEM_CODE=#{lec_sem_code}
+</select>
+
+<!-- 개인신청강의삭제 -->
+<select id="p_lec_del" statementType="CALLABLE">
+{
+	call P_LEC_DEL(#{lec_app_code})
+}
+ </select>
+
+<!-- 개인강의시간표검색 -->
+<select id="search_time_lec" parameterType="int" resultType="Lec_Lecsearch">
+SELECT SV.LEC_NAME, SV.LEC_POINT, SV.LEC_DAY, SV.LEC_HOUR FROM LEC_APP A, LEC_SCHELIST_VIEW SV WHERE A.LEC_SCHE_CODE=SV.LEC_SCHE_CODE AND A.MEM_NUM=#{mem_num} AND SV.LEC_SEM_CODE=#{lec_sem_code}
+</select>
+
+<!-- 강의평가 강의리스트 -->
+<select id ="sel_eval" parameterType="int" resultType="Lec_Lecsearch">
+select e.lec_app_code, e.lec_whe, sv.lec_name from lec_app a, lec_eval e, LEC_SCHELIST_VIEW SV
+where a.lec_app_code=e.lec_app_code and a.lec_sche_code=sv.lec_sche_code and a.mem_num=#{mem_num}
+</select>
+
+<!-- 강의평가 평가리스트 -->
+<select id ="list_eval" resultType="map">
+SELECT * FROM LEC_EVAL WHERE LEC_APP_CODE=#{lec_app_code}
+</select>
+
+<!-- 강의평가 -->
+<select id="p_lec_eval" statementType="CALLABLE">
+{call P_LEC_EVAL(#{lec_app_code},#{lec_qone},#{lec_qtwo},#{lec_qthr},
+		#{lec_qfou},#{lec_qfiv},#{lec_qsix},#{lec_qsev},#{lec_qeig})}
+</select>
+ 
+ <!-- 휴학신청 프로시저 -->
+ <select id="p_lec_leave_app" statementType="CALLABLE">
+{
+	call P_LEC_LEAVE_APP(
+	#{mem_num},#{lec_res_code},#{lec_sem_code})
+}
+ </select>
+ 
+<!-- 휴학정보불러오기 -->
+<select id="leav_info" parameterType="java.util.Map" resultType="java.util.Map">
+<![CDATA[select * from lec_leave where mem_num=#{mem_num} and LEC_LEAV_CODE < #{lec_leav_code}+1000 AND LEC_LEAV_CODE> #{lec_leav_code}-21000]]>
+</select>
+
+ <!-- 휴학취소 프로시저 -->
+ <select id="p_lec_back_app" statementType="CALLABLE">
+{
+	call P_LEC_BACK_APP(
+	#{mem_num},#{lec_leav_code})
+}
+ </select>
+
+</mapper>

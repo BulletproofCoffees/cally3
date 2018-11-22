@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 컨트롤러 페키지 지정 -->
+	<typeAliases>
+		<package name="cally.sharing.beans" />
+		<package name="cally.sj.beans" />
+		<package name="cally.tbooking.beans" />
+		<package name="cally.health.beans" />
+		<package name="cally.lecture.beans" />
+		<package name="cally.movie.beans" />
+		<package name="cally.acbook.beans" />
+		<package name="cally.business.beans" />
+	</typeAliases>
+	
+	      
+
+
+</configuration>

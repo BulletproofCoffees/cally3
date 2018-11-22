@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.CateMappr">
+
+<select id="list_basic" parameterType="int" resultType="Ac_Sub">
+SELECT * FROM AC_SUBCLASS WHERE CATE_CODE=#{cate_code} AND SUB_BASIC='y' ORDER BY SUB_CODE
+</select>
+
+<select id="list_user" parameterType="java.util.Map" resultType="Ac_Sub">
+SELECT * FROM AC_SUBCLASS WHERE CATE_CODE=#{cate_code} AND SUB_BASIC='n' AND MEM_NUM=#{mem_num} ORDER BY SUB_CODE
+</select>
+
+<select id="list_13y" parameterType="int" resultType="Ac_Sub">
+SELECT * FROM V_AC_CATE13 WHERE MEM_NUM = #{mem_num} AND SUB_BASIC = 'n' AND ACC_USEYN = 'y' ORDER BY SUB_CODE
+</select>
+
+<select id="list_14y" parameterType="int" resultType="Ac_Sub">
+SELECT * FROM V_AC_CATE14 WHERE MEM_NUM = #{mem_num} AND SUB_BASIC = 'n' AND CARD_USEYN = 'y' ORDER BY SUB_CODE
+</select>
+
+<select id="check_subname"  parameterType="java.util.Map" resultType="int">
+SELECT count(*) FROM AC_SUBCLASS WHERE CATE_CODE=#{cate_code} AND SUB_NAME=#{sub_name} AND (MEM_NUM=#{mem_num} OR SUB_BASIC='y')
+</select>
+
+<select id="check_subcount"  parameterType="java.util.Map" resultType="int">
+SELECT count(*) FROM AC_SUBCLASS WHERE CATE_CODE=#{cate_code} AND (MEM_NUM=#{mem_num} OR SUB_BASIC='y')
+</select>
+
+<insert id="new_sub" parameterType="java.util.Map">
+INSERT INTO AC_SUBCLASS (SUB_CODE, CATE_CODE, MEM_NUM, SUB_NAME, SUB_BASIC) VALUES (seq_ac_sub.nextVal, #{cate_code}, #{mem_num}, #{sub_name}, 'n')
+</insert>
+
+<delete id="del_sub"  parameterType="java.util.Map">
+	{
+			call p_ac_delsub(
+				#{mem_num}
+				, #{cate_code}
+				, #{sub_code}
+			)
+		}
+</delete>
+
+<update id="up_sub"  parameterType="java.util.Map">
+UPDATE AC_SUBCLASS SET SUB_NAME = #{sub_name} WHERE MEM_NUM = #{mem_num} AND SUB_CODE=#{sub_code} AND SUB_BASIC='n'
+</update>
+</mapper>

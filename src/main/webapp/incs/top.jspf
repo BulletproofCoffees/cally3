@@ -1,0 +1,92 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+  <title>TEAM PROJECT CALLY</title>
+
+  <!-- Favicons -->
+  <link href="${pageContext.request.contextPath}/img/favicon.png" rel="icon">
+  <link href="${pageContext.request.contextPath}/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="${pageContext.request.contextPath}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--external css-->
+  <link href="${pageContext.request.contextPath}/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="${pageContext.request.contextPath}/lib/fullcalendar/bootstrap-fullcalendar.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+ 
+   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-fileupload/bootstrap-fileupload.css" />
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-datepicker/css/datepicker.css" />
+   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-timepicker/compiled/timepicker.css" />
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/lib/bootstrap-datetimepicker/css/datetimepicker.css" />
+  
+  
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/zabuto_calendar.css">
+ 
+ <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/css/style-responsive.css" rel="stylesheet">
+  
+  
+  <!-- 수지 추가 -->
+<link href="${pageContext.request.contextPath}/sj/sj_css.css" rel="stylesheet">  
+  <!-- /수지 추가 -->
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- =======================================================
+    Template Name: Dashio
+    Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
+    Author: TemplateMag.com
+    License: https://templatemag.com/license/
+  ======================================================= -->
+<style>
+.c-theme {
+color: #4ECDC4;
+}
+.c-theme02 {
+color: #ac92ec;
+}
+</style>
+
+</head>
+<body>
+  <section id="container">
+    <!-- **********************************************************************************************************************************************************
+        TOP BAR CONTENT & NOTIFICATIONS
+        *********************************************************************************************************************************************************** -->
+    <!--header start-->
+    <header class="header black-bg">
+      <div class="sidebar-toggle-box">
+        <div class="fa fa-bars tooltips" data-placement="right" data-original-title="메뉴 숨기기"></div>
+      </div>
+      <!--logo start-->
+      <a href="${pageContext.request.contextPath}" class="logo"><b><span>CALLY</span></b></a>
+      <!--logo end-->
+      <div class="nav notify-row" id="top_menu">
+        <!--  notification start -->
+        <ul class="nav top-menu" style="width: 100%">
+          <li><c:url value="/business" var="businessUrl"/><a class="callymenu c_business" href="${businessUrl}">업무일정</a></li>
+          <li><c:url value="/acbook" var="acbookUrl"/><a class="callymenu c_acbook" href="${acbookUrl}">가계부</a></li>
+          <li><c:url value="/lecture" var="lectureUrl"/><a class="callymenu c_lecture" href="${lectureUrl}">학사관리</a></li>
+          <li><c:url value="/health" var="healthUrl"/><a class="callymenu c_health" href="${healthUrl}">운동관리</a></li>
+          <li><c:url value="/sj" var="sjUrl"/><a class="callymenu c_sj" href="${sjUrl}">식단관리</a></li>
+          <li><c:url value="/movie" var="movieUrl"/><a class="callymenu c_movie" href="${movieUrl}">영화예매</a></li>
+          <li><c:url value="/tbooking" var="tbookingUrl"/><a class="callymenu c_tbooking" href="${tbookingUrl}">열차예매</a></li>
+        </ul>
+        <!--  notification end -->
+      </div>
+      <div class="top-menu">
+        <ul class="nav pull-right top-menu">
+         <li><c:url value="/logout" var="logoutUrl"/><a class="logout" href="${logoutUrl}">Logout</a></li>
+        </ul>
+      </div>
+    </header>
+    
+  

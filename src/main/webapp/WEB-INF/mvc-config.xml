@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" xmlns:beans="http://www.springframework.org/schema/beans"
+>
+
+    <!-- Uncomment and your base-package here:
+         <context:component-scan
+            base-package="org.springframework.samples.web"/>  -->
+<!-- 지수 -->
+<mvc:annotation-driven>
+<mvc:message-converters>
+<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+</mvc:message-converters>
+</mvc:annotation-driven>
+ 
+
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
+	       <!--  <property name="prefix" value="/view/"/> -->
+	        <property name="prefix" value="/"/>
+	        <property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!-- 라이브러리 -->
+	<mvc:resources mapping="/css/**" location="/resources/css/" />
+	<mvc:resources mapping="/img/**" location="/resources/img/" />
+	<mvc:resources mapping="/lib/**" location="/resources/lib/" />
+	<mvc:resources mapping="/contactform/**" location="/resources/contactform/" />	
+	
+	<!-- 수지추가 -->
+	<mvc:resources mapping="/sj/**" location="/resources/sj/" /><mvc:annotation-driven />
+	
+	<!-- /라이브러리 -->
+	<mvc:resources mapping="/callyplus/**" location="/resources/callyplus/js" />
+	<mvc:resources mapping="/callyPlus/img/**" location="/resources/img/callyPlus/" />
+	<mvc:resources mapping="/callyPlus/css/**" location="/resources/css/callyPlus/" />
+	<mvc:annotation-driven />
+
+
+	<!-- 오라클 접속정보 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="oracle.jdbc.OracleDriver"></property>
+<property name="url" value="jdbc:oracle:thin:@192.168.1.6:1521:orcl"></property>
+<!-- <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"></property> -->
+		<property name="username" value="cally"></property>
+		<property name="password" value="cally"></property>
+	</bean>
+
+	<!-- 데이터소스로 쿼리실행 sqlSessionFactory -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation"
+			value="classpath:mybatis-config.xml"></property>
+		<property name="mapperLocations"
+			value="classpath:mappers/**/*Mapper.xml"></property>
+	</bean>
+
+	<bean id="sqlSession" 
+		class="org.mybatis.spring.SqlSessionTemplate"
+		destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory"
+			ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+
+	
+	<!-- 컨트롤러 패키지 지정 -->
+	<context:component-scan base-package="cally.sharing.controller"></context:component-scan>
+	<context:component-scan base-package="cally.sharing.service"></context:component-scan>
+	<context:component-scan base-package="cally.sharing.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.sj.controller"></context:component-scan>
+	<context:component-scan base-package="cally.sj.service"></context:component-scan>
+	<context:component-scan base-package="cally.sj.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.acbook.controller"></context:component-scan>
+	<context:component-scan base-package="cally.acbook.service"></context:component-scan>
+	<context:component-scan base-package="cally.acbook.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.business.controller"></context:component-scan>
+	<context:component-scan base-package="cally.business.service"></context:component-scan>
+	<context:component-scan base-package="cally.business.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.health.controller"></context:component-scan>
+	<context:component-scan base-package="cally.health.service"></context:component-scan>
+	<context:component-scan base-package="cally.health.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.lecture.controller"></context:component-scan>
+	<context:component-scan base-package="cally.lecture.service"></context:component-scan>
+	<context:component-scan base-package="cally.lecture.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.movie.controller"></context:component-scan>
+	<context:component-scan base-package="cally.movie.service"></context:component-scan>
+	<context:component-scan base-package="cally.movie.dao"></context:component-scan>
+	
+	<context:component-scan base-package="cally.tbooking.controller"></context:component-scan>
+	<context:component-scan base-package="cally.tbooking.service"></context:component-scan>
+	<context:component-scan base-package="cally.tbooking.dao"></context:component-scan>
+
+
+	<!-- INTERCEPTOR -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/acbook/**"/>
+			<mvc:mapping path="/business/**" />
+			<mvc:mapping path="/lecture/**" />
+			<mvc:mapping path="/sj/**" />
+		<!-- 	<mvc:mapping path="/health/**" /> -->
+			<mvc:mapping path="/tbooking/**" />
+			<mvc:mapping path="/movie/**" />
+			<bean class="cally.sharing.interceptors.Login_interceptor" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/admin/**"/>
+			<mvc:exclude-mapping path="/admin/loginform"/>
+			<mvc:exclude-mapping path="/admin/login"/>
+			<mvc:exclude-mapping path="/admin/logout"/>
+			<bean class="cally.sharing.interceptors.Admin_interceptor" />
+		</mvc:interceptor>
+		
+    <mvc:interceptor>
+         <mvc:mapping path="/acbook/**" />
+         <mvc:exclude-mapping path="/acbook/newform" />
+         <bean class="cally.acbook.interceptors.Acbook_interceptor" />
+      </mvc:interceptor>
+
+	
+
+<mvc:interceptor>
+			<mvc:mapping path="/sj/**" />
+			<mvc:exclude-mapping path="/sj" />
+			<bean class="cally.sj.interceptors.Sj_interceptor" />
+		</mvc:interceptor> 
+	</mvc:interceptors>
+
+		
+	<!-- FILE UPLOAD / FILE DOWNLOAD -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="100000000"></beans:property>
+	</beans:bean>
+	<beans:bean id="uploadPath" class="java.lang.String">
+		<beans:constructor-arg value="C:\Users\hankyung\Documents\카카오톡 받은 파일\수지삭제노노\cally\src\main\webapp\resources\sj\img"></beans:constructor-arg>
+	</beans:bean>
+</beans>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.CardMapper">
+
+<select id="all_cardcom"  resultType="java.util.Map">
+SELECT * FROM AC_CARD_CD ORDER BY CARDCOM_CODE ASC
+</select>
+
+<select id="all_card"  parameterType="int" resultType="java.util.Map">
+SELECT * FROM V_AC_CARD WHERE MEM_NUM = #{mem_num} ORDER BY CARD_CODE ASC
+</select>
+
+<select id="new_card" statementType="CALLABLE"  parameterType="java.util.Map" >
+{
+			call p_ac_newcard(
+				#{mem_num}
+				, #{card_name}
+				, #{cardcom_code}
+				, #{card_useyn}
+				, #{check_yn}
+				, #{acc_code, jdbcType=INTEGER}
+				, #{card_day}
+				, #{message, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String}
+			)
+		}
+
+</select>
+
+<select id="up_card" statementType="CALLABLE"  parameterType="java.util.Map" >
+{
+			call p_ac_upcard(
+				#{mem_num}
+				, #{card_code}
+				, #{card_name}
+				, #{cardcom_code}
+				, #{card_useyn}
+				, #{acc_code, jdbcType=INTEGER}
+				, #{card_day}
+				, #{message, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String}
+			)
+		}
+
+</select>
+
+<select id="del_card" statementType="CALLABLE"  parameterType="java.util.Map" >
+{
+			call p_ac_delcard(
+				#{mem_num}
+				, #{card_code}
+				, #{message, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String}
+			)
+		}
+
+</select>
+
+
+<select id="use_card"  parameterType="int" resultType="java.util.Map">
+SELECT * FROM AC_CARD WHERE MEM_NUM = #{mem_num} AND CARD_USEYN='y' ORDER BY CARD_CODE ASC
+</select>
+
+<select id="card_fee" statementType="CALLABLE"  parameterType="java.util.Map">
+{
+			call p_ac_cardfee(
+				#{mem_num}
+				, #{card_name}
+				, #{sub_code}
+				, #{result, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Integer}
+			)
+		}
+</select>
+</mapper>

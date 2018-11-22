@@ -1,0 +1,53 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<link href="${pageContext.request.contextPath}/css/callyPlus/lecture.css" rel="stylesheet">
+<style>
+.callymenu{
+	color: #666666 !important;
+}
+.c_lecture{
+	color: #4ECDC4 !important;
+}
+</style>
+
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <br><li><h5 class="centered">ADMIN</h5></li><br>
+          <li class="sub-menu">
+            <a href="javascript:;">
+              <i class="fa fa-user"></i>
+              <span>학생관리</span>
+              </a>
+            <ul class="sub">
+            <li><c:url value="/admin/lecture/st_list" var="lec_stlUrl"/><a href="${lec_stlUrl}">학생목록</a></li>
+            </ul>
+          </li>
+          <li class="sub-menu">
+            <a href="javascript:;">
+              <i class="fa fa-edit"></i>
+              <span>수업관리</span>
+              </a>
+            <ul class="sub">
+              <li><c:url value="/admin/lecture/lec_list" var="lec_listUrl"/><a href="${lec_listUrl}">강의목록/등록/삭제</a></li>
+              <li><c:url value="/admin/lecture/eval_list" var="lec_evalUrl"/><a href="${lec_evalUrl}">강의평가목록</a></li>
+              </ul>
+          </li>
+          
+          <li class="sub-menu">
+            <a href="javascript:;">
+              <i class="fa fa-trophy"></i>
+              <span>성적관리</span>
+              </a>
+            <ul class="sub">
+              <li><c:url value="/admin/lecture/rec_list" var="rec_reclUrl"/><a href="${rec_reclUrl}">수업별성적관리</a></li>
+              <li><c:url value="/lecture/this" var="rec_thisUrl"/><a href="${rec_thisUrl}">연도별성적조회</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>
+    <!--sidebar end-->

@@ -1,0 +1,19 @@
+ <%@ include file="/admin/incs/top.jspf"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+     <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <ul class="sidebar-menu" id="nav-accordion">
+        <br><li><h5 class="centered">${sessionScope.loginAdmin.adm_id}님</h5></li><br>
+          
+          <li><c:url value="/admin/health/a_health_main" var="a_health_main"/><a class="callymenu c_health" href='${a_health_main}'></a>
+          <li><c:url value="/admin/health/a_health_exercise" var="a_health_exercise"/>
+          <a class="callymenu c_health" href='${a_health_exercise}'><i class="fa fa-youtube-play"></i>운동입력</a></li>
+          <li><c:url value="/admin/health/a_health_calculator" var="a_health_calculator"/>
+          <a class="callymenu c_health" href='${a_health_calculator}'><i class="fa fa-pencil-square-o"></i>칼로리계산기입력</a></li>
+       
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>

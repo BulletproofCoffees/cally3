@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.lec.AdminMapper">
+<select id ="selL_kind" resultType="java.util.Map">
+SELECT * FROM LEC_LECTURE
+</select>
+<select id ="selR_kind" resultType="java.util.Map">
+SELECT * FROM LEC_DAN
+</select>
+<select id ="selP_kind" parameterType="int" resultType="java.util.Map">
+SELECT * FROM LEC_PRO WHERE LEC_DAN_CODE=#{lec_dan_code}
+</select>
+<select id ="selD_kind" resultType="java.util.Map">
+SELECT * FROM LEC_DAY
+</select>
+<select id ="selH_kind" resultType="java.util.Map">
+SELECT * FROM LEC_HOUR
+</select>
+
+
+
+<!-- select id ="selR_kind" parameterType="int" resultType="java.util.Map">
+SELECT * FROM LEC_ROOM WHERE LEC_DAN_CODE =#{lec_dan_code}
+</select-->
+
+<select id ="selL_info" parameterType="int" resultType="java.util.Map">
+SELECT L.LEC_CODE, L.LEC_NAME, W.LEC_WAY, LA.LEC_LANG, T.LEC_TYPE, T.LEC_POINT
+FROM LEC_LECTURE L, LEC_WAY W, LEC_LANG LA, LEC_TYPE T
+WHERE L.LEC_WAY_CODE=W.LEC_WAY_CODE AND L.LEC_LANG_CODE=LA.LEC_LANG_CODE AND L.LEC_TYPE_CODE=T.LEC_TYPE_CODE AND L.LEC_CODE=#{lec_code}
+</select>
+
+ <!-- 강의등록 -->
+ <select id="p_lec_sche_insert" statementType="CALLABLE" parameterType="java.util.Map">
+{
+	call P_LEC_SCHE_INSERT(
+	#{lec_day},#{lec_hour},#{lec_point},#{lec_dan},#{lec_room_num},
+	#{lec_code},#{lec_pro_code},#{lec_sem_code},#{lec_sum},
+	#{lec_goal},#{lec_perso}, #{lec_athor}, #{lec_book_name},
+	#{lec_publisher}, #{lec_publ_year}, #{lec_msg, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String} )
+}
+ </select>
+ 
+<select id ="lec_detail" parameterType="int" resultType="java.util.Map">
+SELECT * FROM LEC_SCHELIST_VIEW WHERE LEC_SCHE_CODE = #{lec_sche_code}
+</select>
+
+ <!-- 강의수정 -->
+ <select id="p_lec_sche_modify" statementType="CALLABLE" parameterType="java.util.Map">
+{
+	call P_LEC_SCHE_MODIFY(
+	#{lec_sche_code},#{lec_day},#{lec_hour},#{lec_dan},#{lec_room_num},
+	#{lec_sem_code},#{lec_sum}, #{lec_goal},#{lec_perso}, #{lec_athor}, #{lec_book_name},
+	#{lec_publisher}, #{lec_publ_year}, #{lec_msg, mode=OUT, jdbcType=NVARCHAR, javaType=java.lang.String} )
+}
+ </select>
+ 
+ <!-- 개인신청강의삭제 -->
+<select id="p_lec_sche_del" statementType="CALLABLE">
+	{call P_LEC_SCHE_DEL(#{lec_sche_code})}
+</select>
+
+ <!-- 강의평가리스트 -->
+ <select id="eval_list" resultType="java.util.Map">
+SELECT LV.LEC_SCHE_CODE, LV.LEC_NAME, AVG(LEC_QONE) AS QONE,AVG(LEC_QTWO) AS QTWO,
+AVG(LEC_QTHR) AS QTHR ,AVG(LEC_QFOU) AS QFOU ,AVG(LEC_QFIV) AS QFIV, AVG(LEC_QSIX) AS QSIX
+FROM LEC_EVAL E, LEC_SCHE S, LEC_APP A, LEC_LECTURE L, LEC_SCHELIST_VIEW LV
+WHERE E.LEC_APP_CODE=A.LEC_APP_CODE
+AND A.LEC_SCHE_CODE=LV.LEC_SCHE_CODE
+AND E.LEC_WHE='y' group by LV.LEC_SCHE_CODE, LV.LEC_NAME
+ </select>
+ 
+ <!-- 학생리스트 -->
+ <select id="st_list" resultType="java.util.Map">
+SELECT C.MEM_NAME, I.LEC_ST_INFO, I.MEM_NUM, I.LEC_ST_PO FROM LEC_ST_INFO I, C_MEMBER C WHERE C.MEM_NUM=I.MEM_NUM
+ </select>
+ 
+<!-- 학생휴학재학 -->
+ <select id="st_sear" parameterType="java.lang.String" resultType="java.util.Map">
+SELECT C.MEM_NAME, I.LEC_ST_INFO, I.MEM_NUM, I.LEC_ST_PO FROM LEC_ST_INFO I, C_MEMBER C WHERE C.MEM_NUM=I.MEM_NUM AND I.LEC_ST_INFO=#{lec_st_info}
+ </select>
+ 
+<!-- 학생이름 -->
+ <select id="st_name_sear" parameterType="java.lang.String" resultType="java.util.Map">
+SELECT C.MEM_NAME, I.LEC_ST_INFO, I.MEM_NUM, I.LEC_ST_PO FROM LEC_ST_INFO I, C_MEMBER C WHERE C.MEM_NUM=I.MEM_NUM AND C.MEM_NAME LIKE '%'||#{mem_name}||'%'
+ </select>
+
+<!-- 성적디테일 -->
+<select id="rec_detail" parameterType="int" resultType="java.util.Map">
+SELECT SV.LEC_NAME, C.MEM_NAME, R.LEC_GRADE, R.LEC_MID_PO, R.LEC_FIN_PO, R.LEC_ASSI_PO FROM LEC_RECORD R, LEC_SCHELIST_VIEW SV, LEC_APP A, C_MEMBER C
+WHERE R.LEC_APP_CODE=A.LEC_APP_CODE AND A.MEM_NUM=C.MEM_NUM AND SV.LEC_SCHE_CODE=#{lec_sche_code}
+ </select>
+
+</mapper>

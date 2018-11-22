@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.business.BizShareMapper">
+
+<!-- 프로젝트 코멘트 -->
+	<select id="biz_sel_cmt" parameterType="int" resultType="java.util.Map">
+		SELECT CMT_CODE, PJ_CODE, MEM_ID, MEM_NAME, SHARE_CODE, CMT_CONTENT, TO_CHAR(CMT_DAY, 'YY/MM/DD HH24:mi') AS CMT_DAY, AUTH_CODE FROM V_BIZ_PJ_COMMENT WHERE PJ_CODE = #{pj_code} ORDER BY CMT_CODE DESC
+	</select>	
+	
+<!-- 프로젝트 코멘트 등록 -->
+	<insert id="biz_in_cmt" parameterType="hashmap">
+	{
+		call P_BIZ_IN_comment(
+			#{cmt_content}
+			, #{pj_code}
+			, #{mem_num}
+		)
+	}		
+	</insert>
+<!-- 코멘트 삭제 -->	
+	<delete id="biz_del_cmt" parameterType="hashmap">
+	{
+		call P_BIZ_DEL_comment(
+			#{cmt_code}
+			, #{pj_code}
+			, #{mem_num}
+		)
+	}
+	</delete>
+
+</mapper>

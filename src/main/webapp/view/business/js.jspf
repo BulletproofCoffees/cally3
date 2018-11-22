@@ -1,0 +1,703 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<!-- js placed at the end of the document so the pages load faster -->  
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery/jquery.min.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery-ui-1.9.2.custom.min.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/bootstrap/js/bootstrap.min.js"></script>
+
+<!--  캘린더 스크립트 재정의 -->
+  <script src="${pageContext.request.contextPath}/lib/callyPlus/business/biz_fullcalendar.min.js"></script>
+<!--  chartjs 스크립트 재정의 --> 
+  <script src="${pageContext.request.contextPath}/lib/callyPlus/business/chartjs/biz_Chart.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/callyPlus/business/chartjs/biz_chartjs-plugin-datalabels.js"></script>
+  
+  <script class="include" type="text/javascript" src="${pageContext.request.contextPath}/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery.scrollTo.min.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <!--common script for all pages-->
+  <script src="${pageContext.request.contextPath}/lib/common-scripts.js"></script>
+  <!--script for this page-->
+
+  <script src="${pageContext.request.contextPath}/lib/zabuto_calendar.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/form-validation-script.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery-ui-1.9.2.custom.min.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-fileupload/bootstrap-fileupload.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/date.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/moment.min.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/advanced-form-components.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/gritter/js/jquery.gritter.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/gritter-conf.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script>
+
+function cal_del(){
+	var cal_code = $('#modal_c_detail #cal_code').val();
+	if(confirm("일정을 삭제하시겠습니까?")){	
+		$.ajax({
+			url: '/cally/business/cal_del',
+			type:'post',
+			data:{"cal_code":cal_code},
+			dataType:'text',
+			success : function(result){
+				if(result == 'y'){
+					alert("일정이 삭제되었습니다.");
+					location.reload();
+				}
+			}
+		});
+	}
+}
+
+//답장
+	function notice_msg_re(){
+		$('#share_msg_modal #addressee_code').val($('#notice_detail #sender_code').val());
+		$('#share_msg_modal #sender_code').val($('#notice_detail #addressee_code').val());
+		$('#share_msg_modal #add_mem_id').val($('#notice_detail #sender_id').val());
+		$('#notice_detail').modal('hide');
+		$('#share_msg_modal').modal('show');
+	}
+
+//알림 상세
+function notice_detail(l){
+	$("#notice_detail #user_n_code").val($(l).find('#user_n_code').val());
+	$("#notice_detail #addressee_code").val($(l).find('#addressee_code').val());
+	$("#notice_detail #sender_code").val($(l).find('#sender_code').val());
+	$("#notice_detail #state_code").val($(l).find('#state_code').val());
+	$("#notice_detail #sender_id").val($(l).find('#sender_id').val());
+	$("#notice_detail #notice_date").text($(l).find('#notice_date').text());
+	if($(l).find('#notice_content').text() != ""){
+		$("#notice_detail #notice_content").val("내용이 없습니다."); 
+	}else{
+		$("#notice_detail #notice_content").val($(l).find('#notice_content').text());
+	}
+	$("#notice_detail #notice_default_btn").show();
+	$("#notice_detail #notice_invite_btn").hide();
+	$("#notice_detail #notice_msg_re").hide();
+	if($("#notice_detail #state_code").val() == 1){
+		$("#notice_detail #myModalLabel").text('메세지 알림');
+		$("#notice_msg_re").show();
+	}else if($("#notice_detail #state_code").val() == 3){
+		$("#notice_detail #myModalLabel").text('프로젝트 초대 알림'); 
+		$("#notice_detail #notice_default_btn").hide();
+		$("#notice_detail #notice_invite_btn").show();
+	 }else if($("#notice_detail #state_code").val() == 4){
+		$("#notice_detail #myModalLabel").text('프로젝트 초대 - 수락 안내'); 
+	 }else if($("#notice_detail #state_code").val() == 5){
+		$("#notice_detail #myModalLabel").text('프로젝트 초대 - 거절 안내'); }
+	  else if($("#notice_detail #state_code").val() == 6){
+		$("#notice_detail #myModalLabel").text('프로젝트 퇴출 알림'); 
+	 }
+	 
+	if($('#notice_detail #sender_id').val() == ""){
+		$('#sender_tr').attr('hidden', true);
+	}else{
+		$('#sender_tr').attr('hidden', false);
+	}
+	$("#notice_detail").modal('show');
+}
+	
+//알림 상태 업데이트
+function notice_state_up(state){
+if(state == 4){
+	if (confirm("프로젝트를 승락하시겠습니까?")) {
+		$('#notice_detail #up_state_code').val(4);
+		notice_state_up_ajax();
+		alert("초대를 승락하였습니다.");
+	}
+}else if(state == 5){
+	if (confirm("프로젝트를 거절하시겠습니까?")) {
+		$('#notice_detail #up_state_code').val(5);
+		notice_state_up_ajax();
+		alert("초대를 거절하였습니다.");
+	}
+}else{
+	notice_state_up_ajax();
+}
+
+}
+
+//알림 상태 업데이트 ajax
+function notice_state_up_ajax(){
+	var form = $("#notice_detail #bizn_up_f").serialize();
+	$.ajax({ 
+		url: '/cally/business/notice_state',
+	    type: 'POST',
+	    data: form,
+	    dataType : 'text',
+		success: function(result) {
+			if(result == 'y'){
+				$.ajax({ 
+					url: '/cally/business/notice_new',
+				    type: 'POST',
+				    dataType : 'text',
+					success: function(n) {
+						$('#new_notice_span').text(n);
+						$('#biz_notice').empty();
+						$('#biz_notice').append('<li><div class="notify-arrow notify-arrow-yellow"></div></li>');
+						$('#biz_notice').append('<li><p id="new_notice" class="yellow" style="margin-top: -6px">'+n+'개의 새로운 알림이 있습니다</p></li>');
+						new_notice();
+						 $("#notice_detail").modal('hide');
+					},
+				    error: function() {
+				    	$('#new_notice').text("새로운 알림이 없습니다.");
+				    	$('#new_notice_span').text(0);
+				    } 
+				});
+			}
+		},
+	    error: function() {
+	         alert('알림 로드 실패');
+	    } 
+	});
+}
+
+
+//메세지 작성
+function notice_msg_ajax(){
+	var form = $("#share_msg_modal #bizn_msg_in_f").serialize();
+ 	$.ajax({
+   		type : 'POST',
+   		url : '/cally/business/notice_msg',
+   		data : form,
+		dataType : 'text',
+   		success : function(result) {
+			if(result == 'y'){
+				alert("메세지를 작성하였습니다.");
+				$('#share_msg_modal #notice_content').val("");
+				$('#share_msg_modal').modal('hide');
+			}
+   		},
+   		error: function(){
+   			alert("작성 실패");
+   		}
+   	});
+	
+}
+
+//업무 수정(업데이트)
+function task_up(){
+	if($('#modal_t_detail #task_title').val() == ""){ alert("업무 제목을 입력해주세요."); }
+	if($('#modal_t_detail #task_start').val() == "" || $('#modal_t_detail #task_end').val() == ""){
+		if($('#modal_t_detail #task_start').val() == ""){
+			alert("업무 시작일자를 입력해주세요."); 
+		}else if($('#modal_t_detail #task_end').val() == ""){
+			alert("업무 종료일자를 입력해주세요.");
+		}
+	}else{
+		if($('#modal_t_detail #task_title').val() != "" && $('#modal_t_detail #task_start').val() != ""){
+			if (confirm("업무를 수정하시겠습니까?")) {
+				var pj_code = $('#modal_t_detail #pj_code').val();
+				if(!$('#modal_t_detail #task_important').prop("checked")){ $('#modal_t_detail #task_important').val('n');}
+				$('#modal_t_detail #task_start').val(moment($('#modal_t_detail #task_start').val() + " " + $('#modal_t_detail #task_starttime').val()).format('YYYY/MM/DD HH:mm:ss'));
+				$('#modal_t_detail #task_end').val(moment($('#modal_t_detail #task_end').val() + " " + $('#modal_t_detail #task_endtime').val()).format('YYYY/MM/DD HH:mm:ss'));
+				var form = $('#bizt_up_f')[0];
+    			var formData = new FormData(form);
+				$.ajax({
+		            url : '/cally/business/task_up',
+		            type : 'POST',
+		            processData: false,
+                    contentType: false,
+		            data : formData,
+		            dataType : 'text',
+		            success : function(result){
+		            	if(result == 'y'){
+		                	alert("일정이 수정되었습니다");
+		                	location.reload();
+		            	}
+		            },
+				    error: function() {
+				         alert('수정 실패');
+				    }
+		        });
+		    }
+		}
+	}
+}
+
+
+//회원 프로젝트 초대
+function mem_invite(){
+	if($('#main_share #mem_id').val() != $('#main_share #mem_id2').val()){
+		alert("회원 검색을 다시 해주세요.");
+	}else{
+		var option = $("#main_share #pj_list_sel option:selected");
+		var pj_code = option.attr('data-p');
+		var share_code = option.attr('data-s');
+		var mem_id = $('#main_share #mem_id').val();
+		var notice_content = $('#main_share #notice_content').val();
+		$.ajax({ 
+ 			url: '/cally/business/notice_invite',
+ 		    type: 'POST',
+ 		    data: {"pj_code":pj_code,"notice_content":notice_content,"mem_id":mem_id, "sender_code":share_code},
+ 		    dataType : 'text',
+ 			success: function(result) {
+ 				if(result == 'y'){
+ 					alert("초대가 완료되었습니다.");
+ 					$('#main_share').modal('hide');
+ 					$('#main_share #notice_content').val("");
+ 					$('#main_share #mem_id').val("");
+ 					$('#main_share #mem_id2').val("");
+ 				}
+ 			},
+ 		    error: function() {
+ 		    	alert("이미 초대한 회원입니다.");
+ 		    } 
+ 		}); 
+	}
+}
+
+
+//회원 검색
+function search_mem(){
+	var mem_id = $('#main_share #mem_id').val();
+		$.ajax({ 
+			url: '/cally/business/mem_search',
+		    type: 'get',
+		    data: {"mem_id":mem_id},
+		    dataType : 'text',
+			success: function(result) {
+				if(result == 'y'){
+					$('#main_share #invite_btn').attr('disabled', false);
+					$('#main_share #mem_id2').val($('#main_share #mem_id').val());
+					alert("존재하는 회원입니다");
+				}else if(result == 'n'){
+					$('#main_share #invite_btn').attr('disabled', true);
+					alert("존재하지 않는 회원입니다.");
+				}
+			},
+		    error: function() {
+		    	alert("존재하지 않는 회원입니다.");
+		    } 
+		});           
+}
+
+	function pj_completePop(btn, pj_code){
+		$(btn).popover({
+	        title: '완료하시겠습니까?',
+	        content: '<div style="text-align:center"><button class="btn btn-default btn-xs" onclick="biz_comPop_hide()">닫기</button>  <button class="btn btn-info btn-xs" onclick="pj_comUp('+ pj_code +')">완료</button>  <button class="btn btn-danger btn-xs" onclick="pj_comDel('+ pj_code +')">재진행</button></div>',
+	        selector: true,
+	        placement: 'left',
+	        html: true
+	    });
+	}
+	
+	function pj_comUp(pj_code){
+		pj_complete(pj_code, 'y');
+	}
+	
+	function pj_comDel(pj_code){
+		pj_complete(pj_code, 'n');
+	}
+	
+	function pj_complete(pj_code, state){
+  		$.ajax({
+			type : 'POST',
+			url : '/cally/business/mypj_complete',
+			data : {'pj_code':pj_code, 'state':state},
+			dataType : 'text',
+			success : function(result){
+				if(result == 'y'){
+					alert("완료일자가 변경되었습니다.");
+					if(state == 'y'){
+						location.href = "myallproject";
+					}else{
+						location.href = "myproject";
+					}
+				}
+			}
+		});
+	}
+	
+	function pj_deletePop(btn, pj_code){
+		$(btn).popover({
+			title: '삭제하시겠습니까?',
+			content: '<div style="text-align:center"><button class="btn btn-default btn-xs" onclick="biz_delPop_hide()">닫기</button>  <button class="btn btn-danger btn-xs" onclick="pj_delete('+ pj_code +')">삭제</button></div>',
+			selector: true,
+			placement: 'left',
+			html: true
+		}, 'show');
+	}
+	
+	function pj_delete(pj_code){
+		$.ajax({
+			type : 'POST',
+			url : '/cally/business/mypj_delete',
+			data : {'pj_code':pj_code},
+			dataType : 'text',
+			success : function(result){
+				if(result == 'y'){
+					alert("프로젝트가 삭제되었습니다.");
+					location.reload();
+				}
+				
+			}
+		});
+	}
+    
+	function biz_comPop_hide(){
+		$('.biz_comPop').popover('hide');
+	}
+
+	function biz_delPop_hide(){
+		$('.biz_delPop').popover('hide');
+	}
+
+
+</script>
+<script>
+function biz_cal(){
+$('#biz_cal').fullCalendar({
+    header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,basicWeek,basicDay'
+    },
+    selectable: true,
+    selectHelper: true,
+    editable: true,
+    async:false,
+    droppable: true, // this allows things to be dropped onto the calendar !!!
+    drop: function(date, allDay) { // this function is called when something is dropped
+    	alert("변경?");
+
+        // retrieve the dropped element's stored Event Object
+        var originalEventObject = $(this).data('eventObject');
+
+        // we need to copy it, so that multiple events don't have a reference to the same object
+        var copiedEventObject = $.extend({}, originalEventObject);
+
+        // assign it the date that was reported
+        copiedEventObject.start = date;
+        copiedEventObject.allDay = allDay;
+
+        // render the event on the calendar
+        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+        $(id).fullCalendar('renderEvent', copiedEventObject, true);
+
+        // is the "remove after drop" checkbox checked?
+        if ($('#drop-remove').is(':checked')) {
+            // if so, remove the element from the "Draggable Events" list
+            $(this).remove();
+        }
+    },
+    events: events,
+    select: function(start, end) {
+        $('#c_add_modal').modal('show');  //달력일자 선택시 작성화면 노출
+        dt_start = moment(start).format('YYYY/MM/DD');
+        dt_end = moment(end).format('YYYY/MM/DD');
+        $('#cal_start').val(dt_start);
+        $('#cal_starttime').val('12:00 AM');
+        $('#cal_end').val(dt_end);
+       },
+    eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) { 
+       	var id = event.id;
+   		var dt_start = moment(event.start).format('YYYY/MM/DD hh:mm:ss');
+   		var mem_num = "${loginUser.mem_num}";
+   		var code = id.substr(1,id.length);
+   		var biz_url;
+		if(event.end == null){
+			var dt_end = moment(event.start).format('YYYY/MM/DD hh:mm:ss');
+		}else{
+			var dt_end = moment(event.end).format('YYYY/MM/DD hh:mm:ss');
+		}
+   		
+    	if (!confirm("기간을 변경하시겠습니까?")) {
+    		revertFunc();
+   		} else {
+    			if(id[0] == "c"){
+    				biz_url = "/cally/business/cal_date_up";
+    			}else if(id[0] == "t"){
+    				biz_url = "/cally/business/task_date_up";
+    			}
+   			$.ajax({
+   			type : 'POST',
+   			url : biz_url,
+   			data : {"mem_num": mem_num, "code": code, "start": dt_start, "end":dt_end},
+   			dataType : 'json',
+   			success : function(event) {
+   				$('#biz_cal').fullCalendar('updateEvent',event);
+   				alert("일정기간이 변경되었습니다.");
+   				},
+   			error: function(){
+   				alert("변경 실패");
+   			}
+   			});
+   		}
+       },       
+	eventResize : function(event, dayDelta, minuteDelta, revertFunc) { //일정기간 움직일시 해당 일자 넘겨줘서 새로 저장
+		var id = event.id;
+		var dt_start = moment(event.start).format('YYYY/MM/DD hh:mm:ss');
+		if(event.end == null){
+			var dt_end = moment(event.start).format('YYYY/MM/DD hh:mm:ss');
+		}else{
+			var dt_end = moment(event.end).format('YYYY/MM/DD hh:mm:ss');
+		}
+		var mem_num = "${loginUser.mem_num}";
+		var code = id.substr(1,id.length);
+		var biz_url;
+ 		if (!confirm("기간을 변경하시겠습니까?")) {
+			revertFunc();
+		} else {
+ 			if(id[0] == "c"){
+ 				biz_url = "/cally/business/cal_date_up";
+ 			}else if(id[0] == "t"){
+ 				biz_url = "/cally/business/task_date_up";
+ 			}
+			$.ajax({
+			type : 'POST',
+			url : biz_url,
+			data : {"mem_num": mem_num, "code": code, "start": dt_start, "end":dt_end},
+			dataType : 'json',
+			success : function(event) {
+				$('#biz_cal').fullCalendar('updateEvent',event);
+				alert("일정기간이 변경 되었습니다.");
+				},
+			error: function(){
+				alert("변경 실패");
+			}
+			});
+		}
+		},
+		eventLimit: true,
+		eventClick: function(calEvent, jsEvent, view) { //클릭 시 일정 내용 불러오기
+			var id = calEvent.id;
+			var code = id.substr(1, id.length);
+			var type = id[0];
+			var data = {'code' : code};
+ 			var dt_start = moment(calEvent.start).format('YYYY-MM-DD hh:mm');
+			if(calEvent.end == null){
+				var dt_end = moment(calEvent.start).format('YYYY/MM/DD hh:mm');
+			}else{
+				var dt_end = moment(calEvent.end).format('YYYY/MM/DD hh:mm');
+			}
+			
+ 			if(type == "c"){
+ 				var url = "/cally/business/cal_detail";
+ 				biz_cal_click(url, data, type);
+ 			}else if(type == "t"){
+ 				var url = "/cally/business/task_detail";
+ 				biz_cal_click(url, data, type);
+ 			}
+		}
+	});
+}
+
+	function biz_cal_click(url, code, type){
+			$.ajax({ 
+		    	url: url,
+		        type: 'POST',
+		        data: code,
+		        dataType : 'json',
+		    	success: function(json) {
+		    		var data = $(json);
+		    		data = data[0];
+		    		if(type == "c"){
+		    			$('#modal_c_detail #cal_code').val(data.cal_code);
+		    			$('#modal_c_detail #cal_title').val(data.cal_title);
+		    			$('#modal_c_detail #cal_place').val(data.cal_place);
+		    			$('#modal_c_detail #cal_content').val(data.cal_content);
+		    			$('#modal_c_detail #cal_img').attr("src", "");
+		    			if(data.cal_file != null){
+			    			$('#modal_c_detail #cal_img').attr("src", getContextPath()+'/sj/img/'+data.cal_file);
+		    				$('#modal_c_detail #cal_img').parent().show();
+		    			}else{
+		    				$('#modal_c_detail #cal_img').parent().hide();
+		    			}
+		    			$('#modal_c_detail #cal_start').val(moment(data.cal_start).format('YYYY/MM/DD'));
+		    			$('#modal_c_detail #cal_starttime').val(moment(data.cal_start).format('hh:mm a'));
+		    			$('#modal_c_detail #cal_end').val(moment(data.cal_end).format('YYYY/MM/DD'));
+		    			$('#modal_c_detail #cal_endtime').val(moment(data.cal_end).format('hh:mm a'));
+		    			if(data.cal_important == 'y'){
+		    				$('#modal_c_detail #cal_important').prop("checked", true);
+		    			}
+		    			$('#modal_c_detail').modal('show');
+		    		}else if(type == "t"){
+		    			if(data.task_important == 'y'){ $('#modal_t_detail #task_important').prop("checked", true); }
+		    			$('#modal_t_detail #mem_num').val(data.mem_num);
+		    			$('#modal_t_detail #pj_t_code').val(data.pj_t_code);
+		    			$('#modal_t_detail #pj_code').val(data.pj_code);
+		    			$('#modal_t_detail #task_title').val(data.task_title);
+		    			$('#modal_t_detail #task_place').val(data.task_place);
+		    			$('#modal_t_detail #task_content').val(data.task_content);
+		    			$('#modal_t_detail #task_img').attr("src", "");
+		    			if(data.task_file != null){
+		    				$('#modal_t_detail #task_img').attr("src", getContextPath()+'/sj/img/'+data.task_file);
+		    				$('#modal_t_detail #task_img').parent().show();
+		    			}else{
+		    				$('#modal_t_detail #task_img').parent().hide();
+		    			}
+		    			$('#modal_t_detail #task_start').val(moment(data.task_start).format('YYYY/MM/DD'));
+		    			$('#modal_t_detail #task_starttime').val(moment(data.task_start).format('hh:mm a'));
+		    			$('#modal_t_detail #task_end').val(moment(data.task_end).format('YYYY/MM/DD'));
+		    			$('#modal_t_detail #task_endtime').val(moment(data.task_end).format('hh:mm a'));
+		    			$('.r_c_code').prop('checked', false);
+		    			if(data.r_c_code == 0){
+		    				$('#modal_t_detail #d_r_c_code6').prop("checked", true);
+		    				$('#modal_t_detail #d_r_c_code').val(6);
+		    			}else{
+			    			$('#modal_t_detail #d_r_c_code'+data.r_c_code).prop("checked", true);
+			    			$('#modal_t_detail #d_r_c_code').val(data.r_c_code);
+		    			}
+		    			$('#modal_t_detail #d_range-slider').val(data.task_attain);
+		    			$('#modal_t_detail #d_range-label').css('left', data.task_attain);
+		    			$('#modal_t_detail #d_range-label').text(data.task_attain);
+		    			$('#modal_t_detail #d_back_color').css('width', data.task_attain + '%').css('margin-top', -45);
+		    			$('#modal_t_detail').modal('show');
+		    		}
+		    	},
+		        error: function() {
+		             alert('권한이 없습니다');
+		        } 
+		    });
+		}
+</script>
+  
+  <script>
+  
+  $(".biz_date").datepicker({ 
+	  dateFormat: 'yyyy/mm/dd'
+  });
+  
+  /* 분석 - 프로젝트 개요 차트*/
+  Morris.Donut({
+      element: 'biz_assignChart',
+      data: [
+        {label: '완료됨', value: 30 },
+        {label: '마감일 지남', value: 15 },
+        {label: '계획됨', value: 45 },
+        {label: '마감일 없음', value: 10 }
+      ],
+        colors: ['#4ECDC4', '#ED5565', '#f0AD4E', '#CCC'],
+        formatter: function (y) { return y + "%" }
+    });
+  
+  Morris.Donut({
+      element: 'biz_writeChart',
+      data: [
+        {label: '전체업무', value: 5 }
+      ],
+      colors: '#FFF'
+    });
+  
+  
+	/* 분석 - 업무리스트 개요 차트 */
+	var biz_outlineChart = document.getElementById('biz_outlineChart').getContext('2d');
+	var stack1 = [20, 30, 0, 0, 100];
+	var stack2 = [30, 15, 0, 80, 0];
+	var stack3 = [30, 35, 40, 20, 0];
+	var stack4 = [20, 20, 60, 0, 0];
+	var stackedBar = new Chart(biz_outlineChart, {
+	    type: 'horizontalBar',
+	    data: {
+	        labels: ["월요일", "화요일", "수요일", "목요일", "금요일"],
+	        datasets: [{
+	            backgroundColor: '#4ECDC4',
+	            data: stack1,
+	            datalabels: {
+					align: 'start',
+					anchor: 'end'
+				}
+	        }, {
+	            backgroundColor: '#ED5565',
+	            data: stack2,
+	            datalabels: {
+					align: 'start',
+					anchor: 'end'
+				}
+	        }, {
+	            backgroundColor: '#f0AD4E',
+	            data: stack3,
+	            datalabels: {
+					align: 'start',
+					anchor: 'end'
+				}
+	        }, {
+	            backgroundColor: '#CCCCCC',
+	            data: stack4,
+	            datalabels: {
+					align: 'start',
+					anchor: 'end'
+				}
+	        }]	
+	    },
+	    options: {
+	        plugins: {
+				datalabels: {
+					color: 'white',
+					display: true,
+					font: { weight: 'bold' },
+					formatter: function (value) {
+						if(value <= 0){
+							return null;
+						}else{
+					    	return value + "%";
+						}
+					}
+				}
+			},
+	        scales: {
+	            xAxes: [{
+	                stacked: true,
+	                position: 'top',
+	                scaleLabel: {
+                	    display: true,
+                	    labelString: "업무비율"
+                	}
+	            }],
+	            yAxes: [{
+	                stacked: true,
+	                position: "top",
+	                categoryPercentage:1.0,
+	                barPercentage: 0.4,
+	                ticks: { beginAtZero:true }
+	            }]
+	        },
+ 	        legend: {display: false}, 
+	        tooltips: { enabled: false },
+	        hover: {mode: null}
+	    }
+	});
+	
+	
+	  function getContextPath(){
+		    var offset=location.href.indexOf(location.host)+location.host.length;
+		    var ctxPath=location.href.substring(offset,location.href.indexOf('/',offset+1));
+		    return ctxPath;
+		}
+
+		function business_goAddForm(clickDay){
+			if($(clickDay).hasClass("fc-other-month")){
+			       return false;
+			    }
+			    var ymbefore = $(document).find("h2").text();
+			    var ym = ymbefore.split(" ");
+			    var month = 0;
+			    var montharr = ["January", "Feburary", "March", "April",
+			       "May", "June", "July", "August", "September",
+			       "October", "November", "December"];
+			    for(var i=0; i<montharr.length; i++){
+			       if(ym[0] == montharr[i]){
+			          month = i+1;
+			          break;
+			       }
+			    }
+			    var year = ym[1];
+			    var day = $(clickDay).find(".fc-day-number").text();
+			    var date = year + "/" + month + "/" + day;
+			    if($("#calActive").hasClass("active")) {
+			    	location.href = getContextPath()+'/business/calAddForm?date=' + date + '&type=cal';
+			    } if($("#pjActive").hasClass("active")) {
+			    	location.href = getContextPath()+'/business/pjAddForm?date=' + date + '&type=pj';
+			    }
+		}
+	
+  </script>
+  

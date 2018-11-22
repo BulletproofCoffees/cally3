@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.cally.CallyMapper">
+
+ <select id="select_member" parameterType="Cally_Member" resultType="Cally_Member">
+ SELECT MEM_NUM, MEM_ID, MEM_PW, MEM_EMAIL, MEM_NAME, MEM_STATE FROM C_MEMBER 
+ WHERE MEM_ID=#{mem_id} AND MEM_PW = #{mem_pw} AND MEM_STATE = 'y'
+ </select>
+ 
+ <select id="check_id" parameterType="java.lang.String" resultType="int">
+ SELECT count(*) from C_MEMBER WHERE MEM_ID = #{mem_id}
+ </select>
+ 
+ <insert id="join_member">
+ insert into c_member values
+  (seq_cally_member.nextval,'y',#{mem_id},#{mem_pw},#{mem_email},#{mem_name})
+  </insert>
+
+ <select id="select_admin" parameterType="Cally_Admin" resultType="Cally_Admin">
+ SELECT ADM_ID, ADM_PW, ADM_EMAIL, ADM_NO FROM C_ADMIN
+ WHERE ADM_ID=#{adm_id} AND ADM_PW = #{adm_pw}
+ </select>
+ 
+  <select id="sub_member" parameterType="java.lang.String" resultType="int">
+ SELECT COUNT(*) FROM C_MEMBER WHERE MEM_STATE = #{mem_state}
+ </select>
+ 
+  <select id="list_member" parameterType="Cally_Member" resultType="Cally_Member">
+ SELECT MEM_NUM, MEM_ID, MEM_PW, MEM_EMAIL, MEM_NAME, MEM_STATE FROM C_MEMBER 
+ <where>
+ <if test="mem_id != null and mem_id !=''">
+ 	MEM_ID LIKE '%'||#{mem_id}||'%'
+ </if>
+<if test="mem_num != null and mem_num gt 0">
+ 	AND MEM_NUM = #{mem_num}
+ </if>
+ <if test="mem_name != null and mem_name !=''">
+ 	AND MEM_NAME LIKE '%'||#{mem_name}||'%'
+ </if>
+ <if test="mem_email != null and mem_email !=''">
+ 	AND MEM_EMAIL LIKE '%'||#{mem_email}||'%'
+ </if>
+ <if test="mem_state != null and mem_state !='all'">
+ 	AND MEM_STATE = #{mem_state}
+ </if>
+ </where>
+   ORDER BY MEM_NUM DESC
+ </select>
+ 
+ </mapper>

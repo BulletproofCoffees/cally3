@@ -1,0 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<style>
+.callymenu{
+	color: #666666 !important;
+}
+.c_business{
+	color: #4ECDC4 !important;
+}
+
+</style>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/callyPlus/business/business.css"/>
+<link href="https://www.cssscript.com/wp-includes/css/sticky.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/to-do.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<!--sidebar start-->
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <br><li><h5 class="centered">${sessionScope.loginUser.mem_name}님</h5></li><br>
+          <li class="sub-menu dcjq-parent-li">
+          	<c:url value="/business/business_main" var="business_main"/><a href="${business_main}" class="dcjq-parent" id="biz_main_active">
+              <i class="fas fa-th fa-fw"></i>
+              <span>전체일정</span>
+              </a>
+          </li>
+          <li class="sub-menu dcjq-parent-li">
+          <c:url value="/business/important" var="important"/><a href="${important}" class="dcjq-parent" id="biz_im_active">
+              <i class="fas fa-star fa-fw"></i>
+              <span>중요일정</span>
+              </a>
+          </li>
+          <li class="sub-menu dcjq-parent-li">
+              <c:url value="/business/mycalendar" var="mycalendar"/><a href="${mycalendar}" id="biz_calActive">
+              <i class="far fa-calendar-alt fa-fw"></i>
+              <span>내 캘린더</span><span class="biz_iconRight"></span>
+              </a>
+          </li>
+          <li class="sub-menu dcjq-parent-li">
+            <a class="dcjq-parent" id="biz_pjActive" href="javascript:;" onclick="fa_change()">
+              <i class="fas fa-desktop fa-fw"></i>
+              <span>내 프로젝트</span><span class="biz_iconRight">
+              	<i id="fa_change" class="fa fa-chevron-down" style="font-size: 1.1em;"></i>
+              </span>
+              </a>
+            <ul class="sub">
+              <li id="biz_act_map"><c:url value="/business/myallproject" var="myallproject"/><a href="${myallproject}">전체 프로젝트<span class="biz_iconRight" style="color:#ED5565"></span></a></li>
+			  <li id="biz_act_mp"><c:url value="/business/myproject" var="myproject"/><a href="${myproject}">진행중인 프로젝트<span class="biz_iconRight" style="color:#ED5565"></span></a></li>  
+              <li id="biz_act_ti"><c:url value="/business/timeline" var="timeline"/><a href="${timeline}"><i class="fa fa-clock-o fa-fw" style="font-size: 0.9em;"></i> 타임라인</a></li>
+<!--          <li id="biz_act_an"><c:url value="/business/analysis" var="analysis"/><a href="${analysis}"><i class="fa fa-bar-chart-o fa-fw" style="font-size: 0.9em;"></i> 분석</a></li>  -->
+            </ul>
+          </li>
+          <li class="sub-menu dcjq-parent-li">
+			  <a class="dcjq-parent biz_aTag" onclick="main_share_modal(-1)">
+              <i class="fa fa-mail-forward fa-fw"></i>
+              <span>프로젝트공유</span>
+              </a>
+          </li>
+<!--           <li class="sub-menu dcjq-parent-li">
+          	  <a class="dcjq-parent biz_aTag" data-toggle="modal" data-target="#main_arrange">
+          	  <i class="fas fa-trash-alt fa-fw"></i>
+              <span>일정정리</span>
+              </a>
+          </li> -->
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>
+    <!--sidebar end-->
+     <!-- Modal -->
+     <script>
+     	function main_share_modal(pj_code){
+     		$.ajax({ 
+     			url: '/cally/business/pj_title',
+     		    type: 'POST',
+     		    dataType : 'json',
+     			success: function(p) {
+     				var p = $(p);
+     				var option = "";
+     				$('#main_share #pj_list_sel').empty();
+     				for (var i = 0; i < p.size(); i++) {
+	     				option += '<option id="op_pj'+ p[i].PJ_CODE +'" data-p="'+p[i].PJ_CODE+'" data-s="'+p[i].SHARE_CODE+'" data-a="'+p[i].AUTH_CODE+'">'+p[i].PJ_TITLE+'</option>';
+					}
+	     			$('#main_share #pj_list_sel').append(option);
+	     			if(pj_code != -1){
+	         			$('#pj_list_sel #op_pj'+pj_code).attr("selected", true);
+	         		}
+     				$('#main_share').modal('show');
+     			},
+     		    error: function() {
+     		    	alert("프로젝트 목록이 존재하지 않습니다");
+     		    } 
+     		});
+     	}
+     	
+     	
+        function fa_change(){
+          	if($('#fa_change').hasClass('fa-chevron-down')){
+          		$('#fa_change').addClass('fa-chevron-up').removeClass('fa-chevron-down');
+          	}else{
+          		$('#fa_change').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+          	}
+          }
+     </script>
+     <%@ include file="biz_modal.jsp" %>

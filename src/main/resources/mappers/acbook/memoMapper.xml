@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.acbook.MemoMapper">
+<select id="memo_cal" parameterType="java.util.Map" resultType="java.util.Map">
+SELECT MEMO_VALUE, MEMO_DATE FROM AC_MEMO
+WHERE MEM_NUM = #{mem_num}
+AND MEMO_DATE BETWEEN TRUNC(TO_DATE(#{year}||'/'||#{month}, 'YYYY/MM'), 'MM')
+AND  LAST_DAY(TO_DATE(#{year}||'/'||#{month}, 'YYYY/MM'))
+</select>
+
+ <select id="memo_basic" parameterType="int" resultType="Ac_Memo">
+SELECT * FROM AC_MEMO WHERE MEM_NUM=#{mem_num} and MEMO_DATE between TO_CHAR(SYSDATE-30,'YY/MM/dd') and TO_CHAR(SYSDATE+30.99999,'YY/MM/dd')
+ </select>
+ 
+ 
+ <select id="memo_view" parameterType="map" resultType="Ac_Memo">
+SELECT * FROM AC_MEMO WHERE MEM_NUM = #{mem_num} AND MEMO_VALUE LIKE '%'||#{memo_value}||'%' AND MEMO_DATE BETWEEN TO_DATE(#{from},'YY/MM/dd') AND TO_DATE(#{to},'YY/MM/dd')
+ </select>
+
+<select id="memo_daily" parameterType="map" resultType="java.lang.String">
+SELECT MEMO_VALUE FROM AC_MEMO WHERE MEM_NUM = #{mem_num} AND MEMO_DATE = #{memo_date}
+</select>
+
+<select id="memo_in"  statementType="CALLABLE" parameterType="java.util.Map">
+		{
+			call p_ac_memo(
+				#{mem_num}
+				, #{memo_date}
+				, #{memo_value}
+			)
+		}
+</select>
+
+<select id="memo_calendar" parameterType="map" resultType="Ac_Memo">
+SELECT MEMO_DATE, MEMO_VALUE from ac_memo WHERE MEM_NUM = #{mem_num} AND MEMO_DATE LIKE #{memo_date}||'%';
+</select>
+</mapper>

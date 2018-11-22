@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.sj.sjMapper">
+
+
+ <!-- 음식 검색 -->
+ <select id="Ingredient_search" resultType="hashmap"> 
+select *from c_sj_foods WHERE DESC_KOR= #{DESC_KOR}
+ </select>
+
+<!-- 새음식db등록 -->
+ <insert id="Ingredient_up" >
+ INSERT INTO c_sj_foods
+ (f_no,desc_kor,mn,serving_wt,nutr_cont1,nutr_cont2,nutr_cont3,nutr_cont4,nutr_cont5,nutr_cont6,nutr_cont7,nutr_cont8,nutr_cont9) 
+ VALUES 
+(seq_cally_c_sj_foods.nextval,#{DESC_KOR},#{MN},#{SERVING_WT},#{NUTR_CONT1},#{NUTR_CONT2},#{NUTR_CONT3},#{NUTR_CONT4},#{NUTR_CONT5},#{NUTR_CONT6},#{NUTR_CONT7},#{NUTR_CONT8},#{NUTR_CONT9})
+ </insert>
+ 
+ 
+ 
+ 
+ <!-- 로그인 --> 
+ <!--회원 건강정보 로그인  -->
+<select id="c_te_login" resultType="map"> 
+select t.mem_code,m.mem_id 
+from c_te t,c_member m
+WHERE
+t.mem_code = m.mem_num
+and m.mem_id = #{mem_id}
+ </select>
+ 
+ <select id="c_te_login2" resultType="Sj_m_VO" parameterType="Sj_m_VO"> 
+select t.mem_code,m.mem_id 
+from c_te t,c_member m
+WHERE
+t.mem_code = m.mem_num
+and m.mem_id = #{mem_id}
+ </select>
+ 
+  <!--회원 건강정보 가입  -->
+  <insert id="hm_join" >
+ insert into c_te(mem_code,mem_sex)
+values (#{mem_num},#{sex})
+ </insert>
+ <!--로그인/  -->
+ 
+ 
+ 
+ 
+<!-- 메인뷰 -->
+<!-- 최근작성 -->
+<select id="re_list" resultType="map"> 
+<![CDATA[
+select 
+*
+from (
+SELECT
+M.MEM_ID,c_sj_day(TDAY.DAY,'yyyy-MM-dd') tday
+,SUM(F.NUTR_CONT1*CAL.AMOUNT) cal
+,SUM(F.NUTR_CONT2*CAL.AMOUNT) Carbohydrateeks,SUM(F.NUTR_CONT3*CAL.AMOUNT) Protein,SUM(F.NUTR_CONT4*CAL.AMOUNT) Fat
+,TDAY.IMG
+FROM 
+C_SJ_RE cal,C_SJ_TODAY tday,C_MEMBER m,C_SJ_FOODS f
+WHERE
+CAL.DOY_CODE =TDAY.DOY_CODE
+and M.MEM_NUM=TDAY.MEM_NUM
+and F.F_NO=CAL.F_NO 
+and M.MEM_ID = #{mem_id}
+GROUP BY M.MEM_ID,TDAY.DAY,TDAY.IMG
+ORDER BY TDAY.DAY DESC
+)
+where rownum <= 3
+]]>
+</select>
+
+<!-- 관리자 추천음식 뷰 -->
+<select id="admin_food" resultType="map">
+select 
+F.DESC_KOR, AF.EXP
+from 
+c_sj_adfood af,C_SJ_FOODS f
+WHERE
+AF.F_NO = F.F_NO
+ORDER BY DBMS_RANDOM.VALUE
+</select>
+ <!-- 메인뷰/-->
+
+
+
+
+
+
+
+<!-- 식단등록  -->
+<!-- 투데이 컬럼생성 프로시져 -->
+<update id="p_sj_today_search"  statementType="CALLABLE">
+{
+call p_sj_today_search(#{m_num},TO_DATE(#{dayurl},'YYYY-MM-dd'))
+}
+</update>
+
+<!-- 생성 투데이넘버 get  -->
+<select id="today_search" resultType="int">
+SELECT
+   today.doy_code
+FROM c_sj_today today,c_member m
+WHERE 
+m.mem_num = today.mem_num
+AND m.mem_num = #{m_num}
+and today.day = TO_DATE(#{dayurl},'YYYY-MM-dd')
+</select>
+
+
+<!-- re테이블 데이터 등록 -->
+<insert id="re_insert" >
+insert into c_sj_Re values (seq_cally_c_sj_Re.nextval,#{doy_code},#{the_code},#{amount},#{f_no})
+</insert>
+
+<!-- 이미지등록  -->
+<insert id="img_insert" >
+update C_SJ_TODAY
+set IMG = #{img}, com = #{text}
+where
+DOY_CODE = #{doy_code}
+</insert>
+
+
+<!-- re데이터 검색  -->
+
+<!-- 이미지 검색 -->
+<select id="img_select" resultType="map">
+ SELECT
+    img,com
+FROM C_SJ_TODAY
+where
+DOY_CODE = #{doy_code}
+</select>
+
+<!--아침  -->
+<select id="re_select_1" resultType="map">
+SELECT
+  re.re_no,re.the_code,re.amount,re.f_no,f.desc_kor,f.serving_wt,f.nutr_cont1,f.nutr_cont2,f.nutr_cont3,f.nutr_cont4,f.mn
+FROM c_sj_re re,c_sj_today today,c_sj_foods f
+WHERE
+re.the_code = 1 
+and re.doy_code = #{doy_code}
+and re.doy_code = today.doy_code
+and f.f_no = re.f_no
+</select>
+
+<!--점심  -->
+<select id="re_select_2" resultType="map">
+SELECT
+  re.re_no,re.the_code,re.amount,re.f_no,f.desc_kor,f.serving_wt,f.nutr_cont1,f.nutr_cont2,f.nutr_cont3,f.nutr_cont4,f.mn
+FROM c_sj_re re,c_sj_today today,c_sj_foods f
+WHERE
+re.the_code = 2 
+and re.doy_code = #{doy_code}
+and re.doy_code = today.doy_code
+and f.f_no = re.f_no
+</select>
+
+<!--저녁  -->
+<select id="re_select_3" resultType="map">
+SELECT
+  re.re_no,re.the_code,re.amount,re.f_no,f.desc_kor,f.serving_wt,f.nutr_cont1,f.nutr_cont2,f.nutr_cont3,f.nutr_cont4,f.mn
+FROM c_sj_re re,c_sj_today today,c_sj_foods f
+WHERE
+re.the_code = 3 
+and re.doy_code = #{doy_code}
+and re.doy_code = today.doy_code
+and f.f_no = re.f_no
+</select>
+
+<!-- 간식 -->
+<select id="re_select_4" resultType="map">
+SELECT
+  re.re_no,re.the_code,re.amount,re.f_no,f.desc_kor,f.serving_wt,f.nutr_cont1,f.nutr_cont2,f.nutr_cont3,f.nutr_cont4,f.mn
+FROM c_sj_re re,c_sj_today today,c_sj_foods f
+WHERE
+re.the_code = 4 
+and re.doy_code = #{doy_code}
+and re.doy_code = today.doy_code
+and f.f_no = re.f_no
+</select>
+
+
+
+<!-- 일일칼로리 모두더하기 -->
+<select id="today_plus" resultType="map">
+SELECT
+M.MEM_ID,c_sj_day(TDAY.DAY,'yyyy-MM-dd') tday
+,SUM(F.NUTR_CONT1*CAL.AMOUNT) cal
+,SUM(F.NUTR_CONT2*CAL.AMOUNT) Carbohydrateeks,SUM(F.NUTR_CONT3*CAL.AMOUNT) Protein,SUM(F.NUTR_CONT4*CAL.AMOUNT) Fat
+,TDAY.IMG
+FROM 
+C_SJ_RE cal,C_SJ_TODAY tday,C_MEMBER m,C_SJ_FOODS f
+WHERE
+CAL.DOY_CODE =TDAY.DOY_CODE
+and M.MEM_NUM=TDAY.MEM_NUM
+and F.F_NO=CAL.F_NO 
+and tday.doy_code = #{doy_code}
+GROUP BY M.MEM_ID,TDAY.DAY,TDAY.IMG
+</select>
+
+<!-- 삭제 -->
+<delete id="re_delete">
+DELETE FROM c_sj_re WHERE re_no = #{re_no}
+</delete>
+
+<!--api&re 등록 프로시저  -->
+<insert id="api_re_up"  statementType="CALLABLE">
+{
+call p_sj_api_foodup(#{DESC_KOR},#{MN},#{SERVING_WT},#{NUTR_CONT1},#{NUTR_CONT2},#{NUTR_CONT3}
+,#{NUTR_CONT4},#{NUTR_CONT5},#{NUTR_CONT6},#{NUTR_CONT7},#{NUTR_CONT8},#{NUTR_CONT9},#{doy_code}
+,#{the_code},#{amount})
+}
+</insert>
+
+<!-- 식단등록/  -->
+
+
+<!-- 달별보기 -->
+
+<select id="days" resultType="map">
+SELECT
+c_sj_day(TDAY.DAY,'yyyy-MM-dd') day
+,SUM(F.NUTR_CONT1*CAL.AMOUNT) cal
+FROM C_SJ_RE cal,C_SJ_TODAY tday,C_MEMBER m,C_SJ_FOODS f
+WHERE
+CAL.DOY_CODE =TDAY.DOY_CODE
+and M.MEM_NUM=TDAY.MEM_NUM
+and F.F_NO=CAL.F_NO 
+and M.MEM_ID =#{mem_id}
+GROUP BY M.MEM_ID,TDAY.DAY
+</select>
+<!-- 달별보기/ -->
+
+
+
+
+<!-- 칼로리 분석  -->
+<!-- 총칼로리 평균 -->
+<select id="average" resultType="map">
+SELECT
+  ROUND(SUM(총칼로리)/COUNT(*),1) Average,ROUND(SUM(탄수)/COUNT(*),1) car,ROUND(SUM(단백)/COUNT(*),1) Protein,ROUND(SUM(지방)/COUNT(*),1) fat,te.m_cal
+FROM(
+SELECT
+M.MEM_ID,c_sj_day(TDAY.DAY,'yyyy-MM-dd') 작성날짜
+,SUM(F.NUTR_CONT1*CAL.AMOUNT) 총칼로리
+,SUM(F.NUTR_CONT2*CAL.AMOUNT) 탄수,SUM(F.NUTR_CONT3*CAL.AMOUNT)단백,SUM(F.NUTR_CONT4*CAL.AMOUNT) 지방
+FROM C_SJ_RE cal,C_SJ_TODAY tday,C_MEMBER m,C_SJ_FOODS f
+WHERE
+CAL.DOY_CODE =TDAY.DOY_CODE
+and M.MEM_NUM=TDAY.MEM_NUM
+and F.F_NO=CAL.F_NO 
+and m.mem_num = #{mem_num}
+GROUP BY M.MEM_ID,TDAY.DAY
+),c_te te
+WHERE 
+te.mem_code = #{mem_num}
+GROUP BY te.m_cal
+</select>
+
+
+<!-- /칼로리 분석  -->
+
+
+
+<select id="c_te" resultType="map">
+SELECT
+    *FROM c_te
+WHERE
+mem_code = #{mem_num}
+</select>
+<!-- 설정 변경  -->
+<update id="c_te_up" >
+update c_te
+set m_cal = #{cal}
+where
+mem_code = #{mem_num}
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

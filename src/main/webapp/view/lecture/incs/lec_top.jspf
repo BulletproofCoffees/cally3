@@ -1,0 +1,56 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<link href="${pageContext.request.contextPath}/css/callyPlus/lecture.css" rel="stylesheet">
+<style>
+.callymenu{
+	color: #666666 !important;
+}
+.c_lecture{
+	color: #4ECDC4 !important;
+}
+</style>
+
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start 사이드바 메뉴 시작-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <br><li><h5 class="centered">${sessionScope.loginUser.mem_name}님</h5></li><br>
+          <li class="sub-menu">
+            <a href="javascript:;">
+              <i class="fa fa-edit"></i>
+              <span>수업관리</span>
+              </a>
+            <ul class="sub">
+              <li><c:url value="/lecture/plan" var="rec_planUrl"/><a href="${rec_planUrl}">강의계획서조회</a></li>
+              <li><c:url value="/lecture/apply" var="rec_applyUrl"/><a href="${rec_applyUrl}">수강신청내역조회/삭제</a></li>
+              <li><c:url value="/lecture/indi_time" var="rec_indiTimeUrl"/><a href="${rec_indiTimeUrl}">개인강의시간표조회</a></li>
+              <li><c:url value="/lecture/eval" var="rec_evalUrl"/><a href="${rec_evalUrl}">강의평가</a></li>
+            </ul>
+          </li>
+          
+          <li class="sub-menu">
+            <a href="javascript:;">
+              <i class="fa fa-trophy"></i>
+              <span>성적관리</span>
+              </a>
+            <ul class="sub">
+              <li><c:url value="/lecture/all" var="rec_allUrl"/><a href="${rec_allUrl}">전체학기성적조회</a></li>
+              <li><c:url value="/lecture/this" var="rec_thisUrl"/><a href="${rec_thisUrl}">금학기성적조회</a></li>
+              <li><c:url value="/lecture/giveup" var="rec_giveupUrl"/><a href="${rec_giveupUrl}">취득학점포기신청</a></li>
+            </ul>
+          </li>
+          
+          <li class="sub-menu">
+            <a href="javascript:;">
+              <i class="fa fa-gear"></i>
+              <span>학적관리</span>
+              </a>
+            <ul class="sub">
+              <li><c:url value="/lecture/leave" var="rec_leaveUrl"/><a href="${rec_leaveUrl}">휴학신청/취소</a></li>
+            </ul>
+          </li>
+        </ul>
+        <!-- sidebar menu end  사이드바 메뉴 끝-->
+      </div>
+    </aside>
+    <!--sidebar end-->

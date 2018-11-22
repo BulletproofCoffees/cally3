@@ -1,0 +1,331 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+ <!-- js placed at the end of the document so the pages load faster -->  
+  <script src="${pageContext.request.contextPath}/lib/jquery/jquery.min.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery-ui-1.9.2.custom.min.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/fullcalendar/fullcalendar.min.js"></script>
+    <script src="${pageContext.request.contextPath}/lib/bootstrap/js/bootstrap.min.js"></script>
+  
+    <script class="include" type="text/javascript" src="${pageContext.request.contextPath}/lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/jquery.scrollTo.min.js"></script>
+   <script src="${pageContext.request.contextPath}/lib/jquery.nicescroll.js" type="text/javascript"></script>
+   
+  <!--common script for all pages-->
+  <script src="${pageContext.request.contextPath}/lib/common-scripts.js"></script>
+  <script class="include" type="text/javascript" src="${pageContext.request.contextPath}/lib/jquery.dcjqaccordion.2.7.js"></script>
+  
+ 
+
+  <!--script for this page-->
+  <script src="${pageContext.request.contextPath}/lib/calendar-conf-events.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/zabuto_calendar.js"></script>
+   <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/date.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+   
+
+    <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
+<%--    <script src="${pageContext.request.contextPath}/lib/form-component.js"></script>  --%>
+     <script src="${pageContext.request.contextPath}/lib/bootstrap-switch.js"></script>
+   
+     <script src="${pageContext.request.contextPath}/lib/jquery-ui-1.9.2.custom.min.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-fileupload/bootstrap-fileupload.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/date.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-daterangepicker/moment.min.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+  <script src="${pageContext.request.contextPath}/lib/advanced-form-components.js"></script>
+  
+   
+  
+  <script>
+  $(document).ready(function(){
+	    $('[data-toggle="tooltip"]').tooltip(); 
+	});
+  
+  function getContextPath(){
+      var offset=location.href.indexOf(location.host)+location.host.length;
+      var ctxPath=location.href.substring(offset,location.href.indexOf('/',offset+1));
+      return ctxPath;
+  }
+  
+  function commas(n) {
+  	//11111같은 숫자를 주면 11,111로 리턴
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function uncommas(str){
+  	//11,111같은 문자열을 주면 숫자로 리턴
+  	 str = String(str);
+  	 str = str.replace(/[^\d]+/g, '');
+  	 return parseInt(str);
+  }
+  
+  
+  $("input[type='number']").blur(function(){
+  	if( $(this).val() == ""){
+  		$(this).val(0);
+  	}
+  	
+  });
+  
+  function inputToJson(fdom){
+	  var form = '<form>';
+	  var inputs = fdom.find("input");
+	     
+	     //input 확인하기
+	     if(inputs.size() > 0 ){
+	     $(inputs).each(function(){
+	    	var name = $(this).attr('name');
+	    	var val = $(this).parent().find("input[name='" + name + "']").val();
+	    	var inputhtml = '<input type="hidden" name="' + name + '" value="' + val + '">';
+	    	form += inputhtml;
+	     });
+	     }
+	     //select 확인하기
+	     
+	     var selects = fdom.find("select");
+	     if(selects.size() > 0){
+	    	 $(selects).each(function(){
+		    	var name = $(this).attr('name');
+		    	var val = $(this).parent().find("select[name='" + name + "']").val();
+		    	var inputhtml = '<input type="hidden" name="' + name + '" value="' + val + '">';
+		    	form += inputhtml;
+		     });
+	     }
+	     
+	     form += '</form>';
+	     
+	     var serialized = $(form).serializeArray(); 
+	     return serialized;
+  }
+  
+  function rowSubmit(btdom){
+  	//click 함수 내에서 $(this) 넘겨줄것
+  	var form = '<form>';
+	     var inputs = btdom.closest("tr").find("input");
+	     //input 확인하기
+	     if(inputs.size() > 0 ){
+	     $(inputs).each(function(){
+	    	var name = $(this).attr('name');
+	    	var type = $(this).attr('type');
+	    	var val = $(this).parent().find("input[name='" + name + "']").val();
+	    	if(type == "checkbox"){
+	    		//체크박스일 경우
+	    		if($(this).is(":checked")){
+	    			//체크된 것만 넘긴다.
+	    			var inputhtml = '<input type="hidden" name="' + name + '" value="' + val + '">';
+	    	    	form += inputhtml;} 
+	    	} else {
+	    	var inputhtml = '<input type="hidden" name="' + name + '" value="' + val + '">';
+	    	form += inputhtml;
+	    	}});}
+	     //select 확인하기
+	     var selects = btdom.closest("tr").find("select");
+	     if(selects.size() > 0){
+	    	 $(selects).each(function(){
+ 		    	var name = $(this).attr('name');
+ 		    	var val = $(this).parent().find("select[name='" + name + "']").val();
+ 		    	var inputhtml = '<input type="hidden" name="' + name + '" value="' + val + '">';
+ 		    	form += inputhtml;
+ 		     });
+	     }
+	     
+	     form += '</form>';
+	     var serialized = $(form).serialize(); 
+	     return serialized;
+  }
+  
+
+  $(".cate_code").change(function(){
+  	var cate_code = $(this).val();
+  	cate_ajax(cate_code, $(this));
+  });
+  
+  function cate_ajax(cate_code, dom){
+	  var subdom = dom.parent().next().find("select[name='sub_code']");
+  	$.ajax({
+  		headers: { 
+		            Accept : "text/plain; charset=utf-8"
+		        },
+  		url : '/cally/acbook/category',
+  		type : 'POST',
+  		dataType : 'json',
+  		data : {'cate_code' : cate_code },
+  		success : function(Data){
+  		 var obj = $(Data);
+  		$(subdom).empty();
+  		  var app = '';
+  		  for ( var i = 0; i < obj.length; i++){
+					 var sub = '<option value="' + obj[i].sub_code + '">' + obj[i].sub_name + '</option>';
+					 app += sub;
+	    		 }
+  		$(subdom).append(app);  
+  		},
+  		error : function(){
+  			alert("json불가");
+  		}
+  	});
+  }
+  
+  $(".inSubmit").click(function(){
+  	inexSubmit($(this), 'i')
+  });
+  
+  $(".exSubmit").click(function(){
+  	inexSubmit($(this), 'e')
+  });
+  
+
+  function inexSubmit(dom, iore){
+  	if(iore == 'e'){
+  		var cc = dom.closest('tr').find("select[name='acc_code']").val();
+  		var sc = dom.closest('tr').find("select[name='card_code']").val();
+  		if( cc == 0 && sc == 0){
+  			alert("출금통장 혹은 카드를 선택하세요.")
+  			return false;
+  		} else if( cc != 0 && sc != 0){
+  			alert("출금통장과 카드 중 하나만 선택해주세요.");
+  			return false;
+  		}
+  	}
+  	var sbc = dom.closest('tr').find("select[name='sub_code']").val();
+  	if( sbc == null){
+  		alert("해당 소분류가 없습니다. 다른 대분류를 선택하거나 소분류를 추가하세요.");
+  		return false;
+  	}
+  	
+  	var cont = dom.closest('tr').find("input[name='det_content']");
+  	if(cont.val() == ""){
+  		alert("내역을 작성해주세요.");
+  		return false;
+  	}
+  	var date = dom.closest('tr').find("input[name='det_date']");
+  	if(date.val() == ""){
+  		alert("날짜를 선택해주세요.");
+  		return false;
+  	}
+  	
+  	var serialized = rowSubmit(dom);
+  	
+  	$.ajax({
+  		url: '/cally/acbook/detail_in',
+  		type: 'post',
+  		data : serialized
+  	});
+  	
+  	window.location.reload();
+  }
+  
+  //체크박스 한꺼번에 체크/체크푸는 스크립트
+	$(".allcheck").click(function(){
+ 		var checks = $(this).closest("tbody").find("input[name='det_code']");
+ 		if($(this).is(":checked")){
+ 			$(checks).each(function(){
+ 				$(this).prop('checked',true);
+ 			});
+ 		} else {
+ 			$(checks).each(function(){
+ 				$(this).prop('checked',false);
+ 			});
+ 		}
+ 	});
+	//수입/지출내역 한꺼번에 지우기
+	$(".delDetail").click(function(){
+    	var table = $(this).prev("div").find("table");
+    	var checks = $(table).find("input[name='det_code']:checked");
+    	if(!confirm(checks.size() +'개의 내역을 삭제하시겠습니까?')){
+    		return false;
+    	} else {
+    	var form = '<form>';
+    	$(checks).each(function(){
+    		form += '<input type="hidden" name="det_code" ';
+    		form += 'value="' + $(this).val() + '">';
+    	});
+    	form += '</form>';
+    	var serialized = $(form).serialize(); 
+    	
+    	$.ajax({
+      		url : '/cally/acbook/detail_del',
+      		type : 'post',
+      		data : serialized
+    });
+    	
+    	window.location.reload();
+    	}
+    });
+	
+	function movemonth(dom, dateinput){
+		   //dom : 클릭한 화살표 객체
+		   //dateinput : 2018/01 같은 value가 있는 input
+		   var plus = 0;
+		   if(dom.hasClass("fa-chevron-left")){
+			   //한달 전으로
+			   plus = -1;
+		   } else if(dom.hasClass("fa-chevron-right")){
+			   //한달 후로
+			   plus = 1;
+		   }
+		   
+		   var date1 = $(dateinput).val().split("/");
+			
+			if(date1[1] == 1 && plus == -1){
+				//1월의 이전이므로 연도도 줄임
+				date1[1] = 12;
+				date1[0] = parseInt(date1[0]) - 1;
+			} else if(date1[1] == 12 && plus == 1){
+				//12월의 다음이므로 연도도 올림
+				date1[1] = 1;
+				date1[0] = parseInt(date1[0]) + 1;
+			} else {
+				date1[1] = parseInt(date1[1]) + parseInt(plus);
+			}
+			var newdate = date1[0] + "/" + date1[1];
+			$(dateinput).val(newdate); 
+	   }
+	
+    $(".exacc").change(function(){
+    	if($(this).val() != 0){
+    		$(".excard").val(0);
+    	}
+    });
+    
+    $(".excard").change(function(){
+    	if($(this).val() != 0){
+    		$(".exacc").val(0);
+    	}
+    });
+    
+    $("#cardCharge").click(function(){
+		var cate_code = $(".excate").val();
+		if(cate_code != 14){
+			alert("대분류에서 카드대금을 선택하세요.");
+			return false;
+		}
+		var sub_code = $(".exsub").val();
+		var card_name = $(".exsub  option:selected").text();
+		
+		$.ajax({
+	    	 type : 'POST',
+	    	 url : '/cally/acbook/cardfee', 
+	    	 data : {
+	    		 'sub_code' : sub_code,
+	    		 'card_name' : card_name
+	    	 },
+		   	success : function(data){
+		   		if(data == "0"){
+		   			alert("미납금이 없습니다.");
+		   		} else{
+		   		//돈 입력칸에 미납분 뿌림
+		    		 $(".exmoney").val(parseInt(data));
+		    		//내역 입력칸에 카드이름+대금 뿌림
+		    		 $(".excontent").val(card_name + " 대금");
+		   		}
+		    	 }
+	     });		
+	});
+  </script>
+   

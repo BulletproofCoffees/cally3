@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "mapper.hel.MypageMapper">
+<select id="in_mypage"  statementType="CALLABLE" parameterType="java.util.Map">
+		{
+			call p_hel_personal_insert(
+				  #{MEM_NUM}
+				, #{MEM_SEX}
+				, #{AGE}
+				, #{STATURE}
+				, #{KG}
+					
+			)
+		}
+</select>
+
+<select id="se_mypage" resultType="java.util.Map" parameterType="int">
+		select * from c_Te,c_member where c_Te.MEM_CODE = c_member.MEM_NUM and c_member.mem_num = #{mem_num}
+</select>
+
+
+<select id="p_hel_cal_insert"  statementType="CALLABLE" parameterType="java.util.Map">
+		{
+			call p_hel_cal_insert(
+				  #{MEM_NUM}
+				, #{C_WEIGHT}  
+				, #{C_GOAL_WEIGHT}
+				, #{C_PERIOD}
+				, #{A_CODE}
+				
+			)
+		}
+</select>
+
+<select id="se_calorie" resultType="java.util.Map">
+select * from hel_calorie,c_Te where c_Te.MEM_CODE = hel_calorie.MEM_NUM and c_Te.MEM_CODE = #{mem_num}
+AND hel_calorie.C_CODE = (
+SELECT MAX(C_CODE) FROM hel_calorie
+WHERE MEM_NUM = #{mem_num}
+GROUP BY MEM_NUM
+)
+</select>
+
+
+<select id="se_calorie_all" resultType="java.util.Map">
+select * from hel_calorie,c_Te where c_Te.MEM_CODE = hel_calorie.MEM_NUM and c_Te.MEM_CODE = #{MEM_CODE} order by C_INDATE desc
+</select>
+
+<select id="se_a_code" resultType="java.util.Map">
+select * from hel_active
+</select>
+
+
+</mapper> 

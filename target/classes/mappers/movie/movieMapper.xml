@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.mapper.movieMapper">
+<select id="get_movie_name" resultType="java.util.Map">
+	SELECT * FROM V_M_INFO
+</select>
+<select id="get_all_movie" resultType="java.util.Map">
+	SELECT * FROM V_M_SCHEDULE
+</select>
+<select id="get_reserv_List" resultType="java.util.Map">
+	SELECT * FROM V_M_RESERVATION where mem_num = #{mem_num} and mrs_code = 1
+</select>
+<select id="get_ad_reserv" resultType="java.util.Map">
+	select * from v_seat where mrs_code = 1
+</select>
+<select id="get_local_code" resultType="java.util.Map">
+	SELECT * FROM M_T_INFO_L
+</select>
+<select id="get_cinema_no" resultType="java.util.Map">
+	SELECT * FROM M_C_NUM
+</select>
+<select id="get_movie_info" resultType="java.util.Map">
+ 	SELECT * FROM M_M_INFO
+</select>
+<select id="get_theater_name" resultType="java.util.Map">
+	SELECT * FROM M_T_INFO
+</select>
+<select id="get_movie_type" resultType="java.util.Map">
+	SELECT * FROM M_M_TYPE
+</select>
+<select id="get_movie_grade" resultType="java.util.Map">
+	SELECT * FROM M_M_GRADE
+</select>
+<select id="get_movie_stime" resultType="java.util.Map">
+	SELECT mst_code, TO_CHAR(MST_NAME,'HH24:MI') as DT FROM M_M_MSTIME ORDER BY mst_code ASC
+</select>
+<select id="get_movie_list" resultType="java.util.Map">
+	SELECT * FROM V_M_INFO WHERE rowid in(select max(rowid) from V_M_INFO group by MMI_NO) order by mmi_no asc
+</select>
+<select id="get_vmovie_info" resultType="java.util.Map">
+	SELECT * FROM V_M_INFO WHERE MMI_NO = #{detail} AND rowid in(select max(rowid) from V_M_INFO group by MMI_NO)
+</select>
+<select id="get_movie_derector" resultType="java.util.Map">
+	select * from v_m_actor where mmi_no = #{detail} and mma_no = 1
+</select>
+<select id="get_movie_actor" resultType="java.util.Map">
+	SELECT * FROM V_M_ACTOR WHERE MMA_NO BETWEEN 2 AND 3 AND MMI_NO = #{detail}
+</select>
+<select id="get_m_schedule" resultType="java.util.Map">
+	SELECT * FROM V_M_SCHEDULE WHERE MMI_NO = #{detail} AND M_C_NO = #{cno} AND MTI_CODE = #{mti_code}
+</select>
+<select id="get_m_reservation" resultType="java.util.Map">
+	SELECT * FROM v_m_reservation
+</select>
+<select id="in_theater_info" statementType="CALLABLE">
+	{
+		call p_tc_add (#{mtil_code},#{mti_name},#{mti_local})
+	}
+</select>
+<select id="movie_add" statementType="CALLABLE">
+	{
+		CALL P_ADD_MOVIE 
+		(#{mmg_code},#{mmt_code},#{mmi_name},#{mmi_img},#{mmi_plot},#{mmi_r_time},#{mmi_trailer},#{mmi_stime},#{mmi_etime},
+		#{mmc_name})
+	}
+</select>
+<select id="schedule_add" statementType="CALLABLE">
+	{
+		CALL P_ADD_SCHEDULE
+		(#{m_c_no},#{mmi_no},#{mti_code},#{mst_code},#{ms_date},#{mo_pay})
+	}
+</select>
+<select id="movie_time_info" resultType="java.util.Map">
+	<![CDATA[ SELECT * FROM V_M_SCHEDULE where MMI_ETIME >= (to_date(#{paramDate},'yyyy/MM/dd')) AND MMI_STIME <= (to_date(#{paramDate},'yyyy/MM/dd'))
+	and MTI_CODE = #{mti_code} AND M_C_NO = #{mcn}]]> 
+</select>
+<select id="movie_time_now" resultType="java.util.Map">
+<![CDATA[ SELECT * FROM V_M_SCHEDULE where MMI_ETIME >= sysdate AND MMI_STIME <= sysdate]]> 
+</select>
+<insert id="in_reserv">
+	INSERT INTO M_RESERVATION VALUES (SEQ_M_RESERVATION.NEXTVAL,6,#{mem_num},#{ms_no},(to_date(#{mr_date},'yyyy/MM/dd')))
+</insert>
+<insert id="in_seat">
+	INSERT INTO M_S_PICK VALUES (SEQ_M_S_PICK.NEXTVAL,#{mr_no},3,#{msp_name})
+</insert> 
+<select id="sel_reserv" resultType="java.util.Map">
+	select * from v_m_reservation where
+	MEM_NUM = #{mem_num} AND rowid in(select max(rowid) from V_M_RESERVATION group by MR_NO)
+	and ms_no= #{ms_no}
+</select>
+<select id="sel_seat" resultType="java.util.Map">
+	select msp_name,ms_no from v_seat_r WHERE ms_no = #{ms_no} AND m_c_no = #{cno}
+</select>
+<select id="update_reserv" statementType="CALLABLE">
+	{
+		call p_reservation
+		(#{mr_no},#{mem_num},#{ms_no})
+	}
+</select>
+<delete id="del_seat">
+	delete m_s_pick where mr_no = #{mr_no} and mcss_code = 3
+</delete>
+<delete id="del_movie">
+	delete v_m_info where mmi_no = #{mmi_no}
+</delete>
+<select id="reserv_seat" resultType="java.util.Map">
+	select * from v_seat where mem_num = #{mem_num}
+</select>
+<select id="del_reserv" statementType="CALLABLE">
+	{
+		 call p_del_reserv (#{mr_no},#{mem_num})
+	}
+</select>
+</mapper>
