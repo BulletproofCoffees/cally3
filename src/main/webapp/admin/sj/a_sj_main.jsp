@@ -20,7 +20,7 @@
               <div class="panel-heading">
                 <ul class="nav nav-tabs nav-justified">
                   <li class="active">
-                    <a data-toggle="tab" href="#overview">섭취량</a>
+                    <a data-toggle="tab" href="#overview">통계</a>
                   </li>
                  <!--  <li>
                     <a data-toggle="tab" href="#contact" class="contact-map">Contact</a>
