@@ -59,82 +59,80 @@
    
 <!-- 검색 -->
 <script>
+/* dbselect*/    
    function search() {
       $(".result").empty();
       var desc_kors = $('#keyword').val();
-    
 $.get("${pageContext.request.contextPath}/sj/foodsdb", {
                      desc_kor : desc_kors,
                      }, function(data) {
                         var obj = data;
                         var jq_obj = $(obj);
-                        console.log(obj);
-                        
-                         if( obj == '' ){
-                        $(".result").append("<p>db 검색 결과 없음</p>");
-                        
-/*--api---------------------------------------------------------------------------------------------  */                        
-      $.get("${pageContext.request.contextPath}/sj/xml", {
-         desc_kor : desc_kors,
-      }, function(data) {
-         var obj = data;
-
-         var jq_obj = $(obj);
-         var item = jq_obj.find("item");
-         var DESC_KOR = item.find("DESC_KOR");
-
-         console.log(obj);
-         /* console.log("items의 개수 : " + items.length); */
-         console.log("item의 개수 : " + item.length);
-         console.log("DESC_KOR의 개수 : " + DESC_KOR.length);
-         console.log("DESC_KOR [0] : " + $(DESC_KOR[0]).text());
-
-         if (item.length == 0) {            
-            
-            $(".result").append("<p>검색어가 없습니다!</p>");
-            $(".result").append('<a href="${pageContext.request.contextPath}/sj/Ingredient_up">새등록하기!</a>');
-            /* alert('식품데이터 없음'); */
-         
-         } else {
-            for (var i = 0; i < item.length; i++) {
-               $(".result").append(
-                         '<tr><td><div class="col-md-6"><span class="check"><input type="checkbox" class="checked"></span> <a href="${Ingredient}?food=">'
-                     +$(DESC_KOR[i]).text()+'('+$(item.find("ANIMAL_PLANT")[i]).text()+')'
-                      +'</a></div><div class="col-md-6 "><b class = "gram">'
-                      +$(item.find("SERVING_WT")[i]).text()
-                      +'</b>당<b class = "cal">'
-                      +$(item.find("NUTR_CONT1")[i]).text() 
-                      +'</b><b>Cal</b></div><div class="col-md-12"><h4 ><div class="col-md-6"><input type="number" class="form-control content" value="1" id="content"></div>'
-                     +'<b class="view3 col-md-offset-1">'
-                     +$(item.find("NUTR_CONT1")[i]).text()
-                     +'</b><b>Cal</b></h4>'
-                     +'</div></td><td>'
-                     +'<input type="hidden" value="0" id="F_NO" readonly>'
-                     +'<input type="hidden" value="'+$(DESC_KOR[i]).text()+'" id="DESC_KOR" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("SERVING_WT")[i]).text()+'" id="SERVING_WT" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT1")[i]).text()+'" id="NUTR_CONT1" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT2")[i]).text()+'" id="NUTR_CONT2" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT3")[i]).text()+'" id="NUTR_CONT3" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT4")[i]).text()+'" id="NUTR_CONT4" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT5")[i]).text()+'" id="NUTR_CONT5" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT6")[i]).text()+'" id="NUTR_CONT6" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT7")[i]).text()+'" id="NUTR_CONT7" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT8")[i]).text()+'" id="NUTR_CONT8" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT9")[i]).text()+'" id="NUTR_CONT9" readonly>'
-                     +'<input type="hidden" value="'+$(item.find("ANIMAL_PLANT")[i]).text()+'" id="ANIMAL_PLANT" readonly>'
-                     +'</td></tr>'
-                     
-                     );
-                                          }
-                                       }
-                                    });
-/*--api---------------------------------------------------------------------------------------------  */
+                        console.log(obj);                       
+                         if( obj == ''){
+                        $(".result").append("<p>db 검색 결과 없음</p>");  
+                        $(".result").append('<a href="${pageContext.request.contextPath}/sj/Ingredient_up">새등록하기!</a>');
+                        apiselect(desc_kors);  /*api*/ 
                      } else {
                         $(".result").append("<p>db 검색 결과 있음</p>");
                         $(".result").append('<a href="${pageContext.request.contextPath}/sj/Ingredient_up">새등록하기!</a>');
                         $(".result").append(obj);
+                        apiselect(desc_kors);  /*api*/ 
                      }
                   });
+   }
+  /*api*/ 
+   function apiselect(desc_kors){
+	   $.get("${pageContext.request.contextPath}/sj/xml", {
+	         desc_kor : desc_kors,
+	      }, function(data) {
+	         var obj = data;
+
+	         var jq_obj = $(obj);
+	         var item = jq_obj.find("item");
+	         var DESC_KOR = item.find("DESC_KOR");
+
+	         console.log(obj);
+	         /* console.log("items의 개수 : " + items.length); */
+	         console.log("item의 개수 : " + item.length);
+	         console.log("DESC_KOR의 개수 : " + DESC_KOR.length);
+	         console.log("DESC_KOR [0] : " + $(DESC_KOR[0]).text());
+
+	         if (item.length == 0) {            
+	            $(".result").append("<p>검색어가 없습니다!</p>");
+	            /* alert('식품데이터 없음'); */
+	         } else {
+	            for (var i = 0; i < item.length; i++) {
+	               $(".result").append(
+	                         '<tr><td><div class="col-md-6"><span class="check"><input type="checkbox" class="checked"></span> <a href="${Ingredient}?food=">'
+	                     +$(DESC_KOR[i]).text()+'('+$(item.find("ANIMAL_PLANT")[i]).text()+')'
+	                      +'</a></div><div class="col-md-6 "><b class = "gram">'
+	                      +$(item.find("SERVING_WT")[i]).text()
+	                      +'</b>당<b class = "cal">'
+	                      +$(item.find("NUTR_CONT1")[i]).text() 
+	                      +'</b><b>Cal</b></div><div class="col-md-12"><h4 ><div class="col-md-6"><input type="number" class="form-control content" value="1" id="content"></div>'  
+	                     +'<b class="view3 col-md-offset-1">'
+	                     +$(item.find("NUTR_CONT1")[i]).text()
+	                     +'</b><b>Cal</b></h4>'
+	                     +'</div></td><td>'
+	                     +'<input type="hidden" value="0" id="F_NO" readonly>'
+	                     +'<input type="hidden" value="'+$(DESC_KOR[i]).text()+'" id="DESC_KOR" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("SERVING_WT")[i]).text()+'" id="SERVING_WT" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT1")[i]).text()+'" id="NUTR_CONT1" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT2")[i]).text()+'" id="NUTR_CONT2" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT3")[i]).text()+'" id="NUTR_CONT3" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT4")[i]).text()+'" id="NUTR_CONT4" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT5")[i]).text()+'" id="NUTR_CONT5" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT6")[i]).text()+'" id="NUTR_CONT6" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT7")[i]).text()+'" id="NUTR_CONT7" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT8")[i]).text()+'" id="NUTR_CONT8" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("NUTR_CONT9")[i]).text()+'" id="NUTR_CONT9" readonly>'
+	                     +'<input type="hidden" value="'+$(item.find("ANIMAL_PLANT")[i]).text()+'" id="ANIMAL_PLANT" readonly>'
+	                     +'</td></tr>'
+	                     );
+	                                          }
+	                                       }
+	                                    });
    }
 </script>
 
@@ -213,13 +211,7 @@ $(document).on("keyup","table.Gram tr",function(){
          
           
    });
-    
-    
-    
-    
-    
-    
-    
+        
     $(document).on("click","tbody#div_List tr",function(){
     	var click = $(this);	
     	$(this).find(' button').click(function(){    	

@@ -59,11 +59,8 @@ td{	padding: 10px;
     
 <c:choose>
 		<c:when test="${id == '[]'}">
-		  
  <section class="wrapper site-min-height" >
  <div class=" js_hame">
-		
-		
  <div class="content">
  <form action="${pageContext.request.contextPath}/sj" method="post">
       <nav class="form-login" style="max-width: 50%; box-shadow: 5px 5px 3px #aaaaaa;">
@@ -87,19 +84,14 @@ td{	padding: 10px;
       </nav>
         </form>
       </div>
-    
             </div> 
 </section>
-   
-      				
 		</c:when>
 		<c:otherwise>
 		<%@ include file="submenu.jspf" %>		
 			  <section id="main-content">
  <section class="wrapper site-min-height" >
  <div class=" js_hame">
- 
- 
  <!-- 최근활동 -->
 					<div class="col-lg-7 main-chart js_hame" style="padding-top: 0px;">
 						<div class="col-md-12 ds">
@@ -109,7 +101,6 @@ td{	padding: 10px;
 									<p>등록된 칼로리카운터가 없습니다!</p>
 									</div>
 								</c:when>
-								
 								<c:otherwise>
 									<p>최근활동</p>
 									<c:forEach items="${re_list}" var="list">
@@ -119,7 +110,6 @@ td{	padding: 10px;
 												<table class="col-md-12 Line">
 													<tbody>
 														<tr>
-
 															<td>총칼로리</td>
 															<td>지방</td>
 															<td>탄수화물</td>
@@ -144,7 +134,6 @@ td{	padding: 10px;
 											</div>
 										</div>
 									</c:forEach>
-
 								</c:otherwise>
 							</c:choose>
 

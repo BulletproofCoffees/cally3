@@ -28,7 +28,7 @@ text-align: center;
 이메일: <input type="text" name="mem_email">
 회원상태 : <select name="mem_state">
 <option value="all">전체</option>
-<option value="y">활동회원</option>
+<option value="">활동회원</option>
 <option value="n">탈퇴회원</option>
 </select>
 <button type="submit" type="submit">검색</button>
@@ -51,18 +51,16 @@ text-align: center;
 <td>${mem.mem_name}</td>
 <td>${mem.mem_email}</td>
 <c:choose>
-<c:when test="${mem.mem_state == 'y'}">
-<td class="c-theme">활동회원</td>
+<c:when test="${mem.mem_state == 'n'}">
+<td class="c-theme02">탈퇴회원</td>
 </c:when>
 <c:otherwise>
-<td class="c-theme02">탈퇴회원</td>
+<td class="c-theme">활동회원</td>
 </c:otherwise>
 </c:choose>
 </tr>
 </c:forEach>
 </table>	
-
-
 </div>
 </section>
 </aside>

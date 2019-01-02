@@ -47,8 +47,7 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"
 			value="oracle.jdbc.OracleDriver"></property>
-<property name="url" value="jdbc:oracle:thin:@192.168.1.6:1521:orcl"></property>
-<!-- <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"></property> -->
+<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"></property>
 		<property name="username" value="cally"></property>
 		<property name="password" value="cally"></property>
 	</bean>
@@ -111,7 +110,7 @@
 			<mvc:mapping path="/acbook/**"/>
 			<mvc:mapping path="/business/**" />
 			<mvc:mapping path="/lecture/**" />
-			<mvc:mapping path="/sj/**" />
+			<mvc:mapping path="/sj/**" />			
 		<!-- 	<mvc:mapping path="/health/**" /> -->
 			<mvc:mapping path="/tbooking/**" />
 			<mvc:mapping path="/movie/**" />
@@ -147,6 +146,9 @@
 		<beans:property name="maxUploadSize" value="100000000"></beans:property>
 	</beans:bean>
 	<beans:bean id="uploadPath" class="java.lang.String">
-		<beans:constructor-arg value="C:\Users\hankyung\Documents\카카오톡 받은 파일\수지삭제노노\cally\src\main\webapp\resources\sj\img"></beans:constructor-arg>
+		<beans:constructor-arg 
+		value="C:\Users\hankyung\Documents\카카오톡 받은 파일\수지삭제노노\cally\src\main\webapp\resources\sj\img"></beans:constructor-arg>
 	</beans:bean>
+	
+	
 </beans>

@@ -8,15 +8,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
  <!-- 음식 검색 -->
  <select id="Ingredient_search" resultType="hashmap"> 
-select *from c_sj_foods WHERE DESC_KOR= #{DESC_KOR}
+ <![CDATA[
+select *from c_sj_foods
+WHERE rownum = 1 and DESC_KOR LIKE '%'||#{DESC_KOR}||'%' ORDER BY DESC_KOR
+]]>
  </select>
 
 <!-- 새음식db등록 -->
  <insert id="Ingredient_up" >
  INSERT INTO c_sj_foods
- (f_no,desc_kor,mn,serving_wt,nutr_cont1,nutr_cont2,nutr_cont3,nutr_cont4,nutr_cont5,nutr_cont6,nutr_cont7,nutr_cont8,nutr_cont9) 
+ (f_no,desc_kor,mn,serving_wt
+ ,nutr_cont1,nutr_cont2,nutr_cont3,nutr_cont4,nutr_cont5,nutr_cont6,nutr_cont7,nutr_cont8,nutr_cont9) 
  VALUES 
-(seq_cally_c_sj_foods.nextval,#{DESC_KOR},#{MN},#{SERVING_WT},#{NUTR_CONT1},#{NUTR_CONT2},#{NUTR_CONT3},#{NUTR_CONT4},#{NUTR_CONT5},#{NUTR_CONT6},#{NUTR_CONT7},#{NUTR_CONT8},#{NUTR_CONT9})
+(seq_cally_c_sj_foods.nextval,#{DESC_KOR},#{MN},#{SERVING_WT}
+,#{NUTR_CONT1},#{NUTR_CONT2},#{NUTR_CONT3},#{NUTR_CONT4},#{NUTR_CONT5},#{NUTR_CONT6},#{NUTR_CONT7}
+,#{NUTR_CONT8},#{NUTR_CONT9})
  </insert>
  
  
@@ -32,7 +38,14 @@ t.mem_code = m.mem_num
 and m.mem_id = #{mem_id}
  </select>
  
- <select id="c_te_login2" resultType="Sj_m_VO" parameterType="Sj_m_VO"> 
+  <!--회원 건강정보 가입  -->
+  <insert id="hm_join" >
+ insert into c_te(mem_code,mem_sex)
+values (#{mem_num},#{sex})
+ </insert>
+ 
+ 
+  <select id="c_te_login2" resultType="Sj_m_VO" parameterType="Sj_m_VO"> 
 select t.mem_code,m.mem_id 
 from c_te t,c_member m
 WHERE
@@ -40,11 +53,6 @@ t.mem_code = m.mem_num
 and m.mem_id = #{mem_id}
  </select>
  
-  <!--회원 건강정보 가입  -->
-  <insert id="hm_join" >
- insert into c_te(mem_code,mem_sex)
-values (#{mem_num},#{sex})
- </insert>
  <!--로그인/  -->
  
  
@@ -60,7 +68,8 @@ from (
 SELECT
 M.MEM_ID,c_sj_day(TDAY.DAY,'yyyy-MM-dd') tday
 ,SUM(F.NUTR_CONT1*CAL.AMOUNT) cal
-,SUM(F.NUTR_CONT2*CAL.AMOUNT) Carbohydrateeks,SUM(F.NUTR_CONT3*CAL.AMOUNT) Protein,SUM(F.NUTR_CONT4*CAL.AMOUNT) Fat
+,SUM(F.NUTR_CONT2*CAL.AMOUNT) Carbohydrateeks
+,SUM(F.NUTR_CONT3*CAL.AMOUNT) Protein,SUM(F.NUTR_CONT4*CAL.AMOUNT) Fat
 ,TDAY.IMG
 FROM 
 C_SJ_RE cal,C_SJ_TODAY tday,C_MEMBER m,C_SJ_FOODS f

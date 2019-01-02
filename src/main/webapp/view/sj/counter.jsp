@@ -39,7 +39,6 @@
 			<div class="col-md-12 " >		
 			<div class="col-md-8 ">								
 					<div class="showback col-md-12">
-
 						<c:choose>
 							<c:when test="${img == '[null]'}">
 								<form method="post" enctype="multipart/form-data" class="imgform">
@@ -113,9 +112,6 @@
              $(document).ready(function(){
                 // Basic
                 $('.dropify').dropify();
-
-              
-                
                 // Used events
                 var drEvent = $('.dropify-event').dropify();
 
@@ -126,21 +122,8 @@
                 drEvent.on('dropify.afterClear', function(event, element){
                 	
                 });
-               
-                
             }); 
-            
-             
-       
         </script>
-
-
-  
-
-
-
-
-
   <style>
 .dropify-wrapper{height: 227px;}
 </style>

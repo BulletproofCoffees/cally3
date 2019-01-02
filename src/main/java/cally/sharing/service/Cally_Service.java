@@ -32,15 +32,12 @@ public class Cally_Service {
 	}
 	
 	public String join(Cally_Member member, Model m, HttpServletRequest request) {
-		if(cally_dao.checkId(member.getMem_id())) {
+		if(cally_dao.joinMember(member.getMem_id(),member)) {
 			//아이디 중복
 			String message = "중복된 아이디입니다. 다른 아이디를 사용하세요.";
 			m.addAttribute("idxmessage", message);
 		} else {
-			//아이디 중복없음
-			//가입 insert
-			cally_dao.joinMember(member);
-			
+			//아이디 중복없음			
 			String message = "가입이 완료되었습니다. 로그인 하십시오.";
 			m.addAttribute("idxmessage", message);
 		}

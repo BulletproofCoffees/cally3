@@ -56,7 +56,8 @@ public class CallyController {
 	public String admin(){		
 		return "admin/admin";
 	} 
-		
+	
+   /*맴버*/		
 	@Inject
 	private Cally_Service cally_service;
 	

@@ -22,7 +22,8 @@ public class Sj_apiDao {
 		  }
 		
 		 StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1470000/FoodNtrIrdntInfoService/getFoodNtrItdntList"); /*URL*/
-         urlBuilder.append("?" + URLEncoder.encode("ServiceKey","UTF-8") + "=RfXg7U0YvxzDlVU3ihBd0f2p0VAxplQjvg5E%2FB7Vt3F2FLPGfwah7jqmZKccUs4HLDZZ6WGNfaYfMDbLVqt1pw%3D%3D"); /*Service Key*/
+         urlBuilder.append("?" + URLEncoder.encode("ServiceKey","UTF-8") + 
+        		 "=RfXg7U0YvxzDlVU3ihBd0f2p0VAxplQjvg5E%2FB7Vt3F2FLPGfwah7jqmZKccUs4HLDZZ6WGNfaYfMDbLVqt1pw%3D%3D"); /*Service Key*/
          urlBuilder.append("&" + URLEncoder.encode("desc_kor","UTF-8") + "=" + URLEncoder.encode(desc_kor, "UTF-8")); /*식품이름*/
          urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));/* 페이지번호*/
          urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
@@ -45,11 +46,8 @@ public class Sj_apiDao {
              sb.append(line);
          }
          rd.close();
-         conn.disconnect();
-         
-         request.setAttribute("xml", sb.toString());	           
-         /*request.getRequestDispatcher("/xml.jsp").forward(request, response);*/
-		
+         conn.disconnect();        
+         request.setAttribute("xml", sb.toString());	           		
 	}
 
 }

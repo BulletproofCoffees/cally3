@@ -44,13 +44,7 @@ public class Sj_Dao {
 
 	public void counter(HttpServletRequest request, Map<String, Object> param) {
 		param.put("doy_code", session.selectOne("mapper.sj.sjMapper.today_search", param));// 데이트테이블 번호get
-		request.setAttribute("day_list_1", session.selectList("mapper.sj.sjMapper.re_select_1", param));// 아침
-		request.setAttribute("day_list_2", session.selectList("mapper.sj.sjMapper.re_select_2", param));// 점심
-		request.setAttribute("day_list_3", session.selectList("mapper.sj.sjMapper.re_select_3", param));// 아침
-		request.setAttribute("day_list_4", session.selectList("mapper.sj.sjMapper.re_select_4", param));// 점심
-		request.setAttribute("tdy_cal", session.selectList("mapper.sj.sjMapper.today_plus", param));// 리턴값
-		request.setAttribute("img", session.selectList("mapper.sj.sjMapper.img_select", param));// 이미지
-		System.out.println(param);
+		counter_list(request,param);
 	}
 
 	public void counter_post(HttpServletRequest request, Map<String, Object> param) {
@@ -61,12 +55,7 @@ public class Sj_Dao {
 		map.put("doy_code", session.selectOne("mapper.sj.sjMapper.today_search", param));// 데이트테이블 번호get
 		System.out.println(map);
 		session.insert("mapper.sj.sjMapper.re_insert", map); // 데이터 등록
-		request.setAttribute("day_list_1", session.selectList("mapper.sj.sjMapper.re_select_1", map));// 아침
-		request.setAttribute("day_list_2", session.selectList("mapper.sj.sjMapper.re_select_2", map));// 아침
-		request.setAttribute("day_list_3", session.selectList("mapper.sj.sjMapper.re_select_3", map));// 아침
-		request.setAttribute("day_list_4", session.selectList("mapper.sj.sjMapper.re_select_4", map));// 아침
-		request.setAttribute("tdy_cal", session.selectList("mapper.sj.sjMapper.today_plus", map));// 리턴값
-		request.setAttribute("img", session.selectList("mapper.sj.sjMapper.img_select", map));// 이미지
+		counter_list(request,map);
 		
 	}
 	public void counter_list(HttpServletRequest request, Map<String, Object> map) {

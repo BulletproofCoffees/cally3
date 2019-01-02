@@ -29,15 +29,7 @@ public class Sj_Service {
 	@Inject
 	private Sj_Dao sj_dao;
 	
-	public void callyM_Service( ServletRequest request, HttpServletRequest req) {
-		Cally_Member loginUser = (Cally_Member) req.getSession().getAttribute("loginUser");		
-		String id  = loginUser.getMem_id();	
-		sj_dao.doP_in_t_enter(new Cally_Member(id), request);	
-			
-		//interceptor용
-		Sj_m_VO sjlogin = sj_dao.sjlogin(id);
-		req.getSession().setAttribute("sjlogin", sjlogin);
-	}
+	
 	public void hm_join(ServletRequest request) {	
 		int mem_num =  Integer.parseInt(request.getParameter("mem_num"));
 		String sex = request.getParameter("sex");
@@ -47,13 +39,29 @@ public class Sj_Service {
 	      sj_dao.hm_join(param,request);
 	}
 	
+	public void callyM_Service( ServletRequest request, HttpServletRequest req) {
+		Cally_Member loginUser = (Cally_Member) req.getSession().getAttribute("loginUser");		
+		String id  = loginUser.getMem_id();	
+		sj_dao.doP_in_t_enter(new Cally_Member(id), request);	
+			
+		//interceptor용
+		Sj_m_VO sjlogin = sj_dao.sjlogin(id);
+		req.getSession().setAttribute("sjlogin", sjlogin);
+	}
+	
+	
+	
+	
 
 	public void food_search(ServletRequest request, String desc_kor) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("DESC_KOR", desc_kor);
 		sj_dao.food_search(request, param,desc_kor);
 		
-	}	
+	}
+
+	
+	
 	public void food_search(ServletRequest request) {		
 		String desc_kor = request.getParameter("desc_kor");
 		 if (Objects.isNull(desc_kor)) {

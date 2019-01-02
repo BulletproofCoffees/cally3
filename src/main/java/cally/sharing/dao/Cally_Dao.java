@@ -19,18 +19,27 @@ public class Cally_Dao {
 	}
 	
 	
-	public boolean checkId(String id) {
+	public boolean joinMember(String id,Cally_Member m) {
 		int count = sqlSession.selectOne("mapper.cally.CallyMapper.check_id",id);
 		if(count > 0) {
 			//아이디 중복
 			return true;
 		} else {
 			//아이디 중복없음
+			sqlSession.insert("mapper.cally.CallyMapper.join_member", m);
+			return false;
+		}
+	}
+
+
+	public boolean checkId(String id) {
+		int count = sqlSession.selectOne("mapper.cally.CallyMapper.check_id",id);
+		if(count > 0) {
+			return true;
+		} else {
 			return false;
 		}
 	}
 	
-	public void joinMember(Cally_Member m) {
-		sqlSession.insert("mapper.cally.CallyMapper.join_member", m);
-	}
+	
 }

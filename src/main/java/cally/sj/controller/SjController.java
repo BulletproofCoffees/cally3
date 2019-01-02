@@ -74,7 +74,6 @@ public class SjController {
 	/*일일 식단작성---------------------------------------------------------------------------*/
 	@RequestMapping(value= "/counter/{bno}", method=RequestMethod.GET)
 	public String counter(@PathVariable String bno,HttpServletRequest request){	
-
 		if (Objects.isNull(bno)) {
 		bno ="=2018-11-7";
 		}		
@@ -87,7 +86,7 @@ public class SjController {
 	public String counter_post(
 			@PathVariable String bno,HttpServletRequest request,MultipartFile img,String text)
 			throws ParseException, UnsupportedEncodingException{	
-		if (Objects.isNull(img) || Objects.isNull(text)) {			
+		if (Objects.isNull(img) && Objects.isNull(text)) {			
 			sj_service.counter_post(request);		
 		} else {
 			//이미지 업로드			
@@ -158,11 +157,13 @@ public class SjController {
 	public String Ingredient_up(){		
 		return "view/sj/Ingredient_up";
 	} 
+	
 	@RequestMapping(value= "/Ingredient_up", method=RequestMethod.POST)
 	public String Ingredient_up_post(ServletRequest request){			
 		sj_service.Ingredient_up_post(request);			        
 		return "view/sj/Ingredient";		
 	} 
+	
 	/*/새음식db등록------------------------------------------------------------------------------------*/
 	
 	/*내식단분석*/

@@ -32,7 +32,7 @@
 						<c:forEach items="${day_list_1}" var="day_list_1">
 							<tr class="re_list">
 								<td><div >
-										<a href="${pageContext.request.contextPath}/sj/Ingredient/${day_list_1.DESC_KOR}">${day_list_1.DESC_KOR}</a><b>(${day_list_1.AMOUNT}개)</b>
+										<a href="${pageContext.request.contextPath}/sj/Ingredient/${day_list_1.DESC_KOR}">${day_list_1.DESC_KOR}</a><b>(${day_list_1.AMOUNT}개)</b>  
 									</div></td>
 								<td><p>${day_list_1.NUTR_CONT2*day_list_1.AMOUNT}</p></td>
 								<td><p>${day_list_1.NUTR_CONT3*day_list_1.AMOUNT}</p></td>
@@ -245,8 +245,6 @@
         	  });
 
         	});
-        
- 
 	$('tr.re_list button.close').on("click", function() {
 		var re_list = $(this).parents("tr.re_list");
 		var click = $(this).attr('type');
@@ -266,7 +264,6 @@
 			}
 		});
 	});
-	
 </script>
       
     
